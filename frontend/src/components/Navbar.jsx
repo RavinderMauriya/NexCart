@@ -43,7 +43,7 @@ const Navbar = () => {
                         <span className="hidden lg:block text-sm ml-1">Cart</span>
                     </Link>
 
-                    <Link to="/profile" className="hidden md:flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2 rounded-xl font-semibold">
+                    <Link to="/profile" className="hidden md:flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-3 md:px-5 py-2 rounded-xl font-semibold">
                         <User />
                         <span className="hidden md:block">Login</span>
                     </Link>

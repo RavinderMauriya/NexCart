@@ -106,7 +106,7 @@ const SlideBackground = () => {
                 {slides.map((img, i) => (
                     <div
                         key={i}
-                        className="min-w-full h-40 sm:h-48 md:h-64 lg:h-80 snap-start relative shrink-0"
+                        className="min-w-full h-40 sm:h-48 md:h-64 lg:h-96 snap-start relative shrink-0"
                     >
                         <img
                             src={img}

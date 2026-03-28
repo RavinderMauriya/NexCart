@@ -1,4 +1,4 @@
-import { Home, Grid, Bell, User, ShoppingCart } from "lucide-react";
+import { Home, Grid, User, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const MobileBottomNav = () => {
@@ -15,9 +15,9 @@ const MobileBottomNav = () => {
         <span className="text-[10px] font-semibold mt-1">Categories</span>
       </Link>
 
-      <Link to="/cart" className="flex flex-col items-center text-text-light">
-        <ShoppingCart size={22} />
-        <span className="text-[10px] font-semibold mt-1">Cart</span>
+      <Link to="/address" className="flex flex-col items-center text-text-light">
+        <MapPin size={22} />
+        <span className="text-[10px] font-semibold mt-1">Address</span>
       </Link>
 
       <Link to="/profile" className="flex flex-col items-center text-text-light">

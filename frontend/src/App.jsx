@@ -15,6 +15,7 @@ const App = () => {
         <Route path="/cart" element={<div />} />
         <Route path="/profile" element={<div />} />
       </Routes>
+      <Footer/>
       <MobileBottomNav/>
     </BrowserRouter>
   );
