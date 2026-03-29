@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import Products from "./pages/Products";
 import MobileBottomNav from "./components/mobileBottomNav";
 import Footer from './components/Footer'
+import ProductPage from "./pages/ProductPage";
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
+        <Route path="/products" element={<ProductPage />} />
         <Route path="/orders" element={<div />} />
         <Route path="/cart" element={<div />} />
         <Route path="/profile" element={<div />} />
