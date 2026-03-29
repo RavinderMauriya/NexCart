@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const MobileBottomNav = () => {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-bg-card shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t flex justify-around items-center px-4 py-2">
+    <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t flex justify-around items-center px-4 py-2 border-border bg-bg-card">
 
       <Link to="/" className="flex flex-col items-center text-primary">
         <Home size={22} />

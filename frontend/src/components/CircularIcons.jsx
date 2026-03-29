@@ -14,7 +14,7 @@ const CircularIcons = () => {
         <section className="px-4 max-w-7xl mx-auto md:px-6 lg:px-8">
 
             {/* header */}
-            <h2 className="text-lg md:text-xl font-bold my-4 md:my-6">
+            <h2 className="text-lg md:text-xl font-bold my-4 md:my-6 text-text-dark">
                 Shop by Department
             </h2>
 
@@ -28,7 +28,7 @@ const CircularIcons = () => {
                     >
 
                         {/* icon */}
-                        <div className="w-14 sm:w-16 md:w-28 aspect-square rounded-full md:rounded-xl overflow-hidden bg-bg-card border-border shadow-sm group-hover:shadow-md group-hover:scale-105 transition">
+                        <div className="w-14 sm:w-16 md:w-28 aspect-square rounded-full md:rounded-xl overflow-hidden shadow-sm group-hover:shadow-md group-hover:scale-105 transition bg-bg-card border-border">
                             <img
                                 src={item.img}
                                 className="w-full h-full object-cover"
@@ -40,8 +40,7 @@ const CircularIcons = () => {
                         <span className="
                             text-xs sm:text-sm
                             font-medium text-center mt-2
-                            group-hover:text-primary
-                            transition
+                            transition text-text-dark
                         ">
                             {item.name}
                         </span>

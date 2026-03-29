@@ -2,14 +2,14 @@ import React from 'react'
 
 const PromoSection = () => {
     return (
-        <div className="relative overflow-hidden bg-white md:m-4">
+        <div className="relative overflow-hidden md:m-4">
             <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
                 <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
                     <div className="sm:max-w-lg">
-                        <h1 className="text-4xl font-bold tracking-tight text-text-dark sm:text-6xl">
+                        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl" style={{ color: "var(--color-text-dark)" }}>
                             Summer styles are finally here
                         </h1>
-                        <p className="mt-4 text-xl text-text-light">
+                        <p className="mt-4 text-xl" style={{ color: "var(--color-text-light)" }}>
                             This year, our new summer collection will shelter you from the harsh elements of a world that doesn't care
                             if you live or die.
                         </p>
@@ -84,7 +84,8 @@ const PromoSection = () => {
 
                             <a
                                 href="#"
-                                className="inline-block rounded-md border border-transparent bg-primary px-8 py-3 text-center font-medium text-white hover:bg-primary-dark"
+                                className="inline-block rounded-md border-transparent px-8 py-3 text-center font-medium text-white"
+                                style={{ background: "var(--color-primary)", border: "none" }}
                             >
                                 Shop Collection
                             </a>

@@ -117,7 +117,7 @@ const SlideBackground = () => {
                         {/* overlay */}
                         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center p-4 md:p-6 lg:p-8">
 
-                            <span className="bg-secondary text-text-dark text-xs md:text-sm px-2 py-1 rounded-lg w-max mb-2">
+                            <span className="text-text-dark text-xs md:text-sm px-2 py-1 rounded-lg w-max mb-2" style={{ background: "var(--color-secondary)" }}>
                                 Exclusive
                             </span>
 
@@ -129,7 +129,7 @@ const SlideBackground = () => {
                                 Curated for excellence
                             </p>
 
-                            <button className="mt-3 bg-blue-600 text-white text-xs md:text-sm px-4 py-2 rounded-lg w-max">
+                            <button className="mt-3 text-white text-xs md:text-sm px-4 py-2 rounded-lg w-max" style={{ background: "var(--color-primary)" }}>
                                 Shop Now
                             </button>
                         </div>

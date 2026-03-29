@@ -1,22 +1,22 @@
 const Footer = () => {
   return (
-    <footer className="w-full py-12 px-6 bg-bg-card">
+    <footer className="w-full py-12 px-6 border-t border-border bg-bg-card">
       <div className="max-w-7xl mx-auto grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
         
         {/* Brand */}
         <div className="sm:col-span-2">
-          <h2 className="text-xl font-bold text-text-dark mb-4">
+          <h2 className="text-xl font-bold mb-4 text-primary">
             NexCart
           </h2>
-          <p className="text-xs text-text-light mb-6 leading-relaxed">
+          <p className="text-xs mb-6 leading-relaxed text-text-light">
             Defining the digital shopping experience through curated excellence and premium craftsmanship.
           </p>
 
           <div className="flex gap-4">
-            <a className="w-8 h-8 flex items-center justify-center rounded-full bg-bg-card-muted hover:scale-110 transition">
+            <a className="w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition bg-bg-main">
               🌐
             </a>
-            <a className="w-8 h-8 flex items-center justify-center rounded-full bg-bg-card hover:scale-110 transition">
+            <a className="w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition bg-bg-main">
               @
             </a>
           </div>
@@ -55,9 +55,9 @@ const Footer = () => {
             <input
               type="email"
               placeholder="Email Address"
-              className="w-full px-3 py-2 text-xs rounded-lg bg-bg-main focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full px-3 py-2 text-xs rounded-lg focus:outline-none focus:ring-1 bg-bg-main focus-ring-primary"
             />
-            <button className="px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg hover:bg-primary-dark">
+            <button className="px-4 py-2 text-xs font-bold text-white rounded-lg bg-primary">
               Join
             </button>
           </div>
@@ -65,9 +65,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom */}
-      <div className="max-w-7xl mx-auto my-6 pt-6 border-t border-border text-center">
-        <p className="text-xs text-text-light">
-          © 2024 NexCart. All rights reserved.
+      <div className="max-w-7xl mx-auto my-6 pt-2 text-center border-t border-border">
+        <p className="text-xs" style={{ color: "var(--color-text-light)" }}>
+          © 2026 NexCart. All rights reserved.
         </p>
       </div>
     </footer>

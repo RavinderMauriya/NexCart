@@ -29,15 +29,15 @@ const brands = [
 
 const LogoTicker = () => {
   return (
-    <section className="w-full py-10 md:py-14 bg-bg-card">
+    <section className="w-full py-10 md:py-14 bg-bg-main">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Wrapper */}
         <div className="relative overflow-hidden">
 
           {/* gradient fade */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 md:w-24 bg-gradient-to-r from-bg-card to-transparent z-10" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 md:w-24 bg-gradient-to-l from-bg-card to-transparent z-10" />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 md:w-24 z-10 bg-linear-to-r from-bg-main to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 md:w-24 z-10 bg-linear-to-l from-bg-main to-transparent" />
 
           {/* Track */}
           <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
