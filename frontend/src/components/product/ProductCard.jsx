@@ -1,11 +1,11 @@
+import { Link } from 'react-router-dom';
 
-const ProductCard = ({ title, price, oldPrice, brand, rating, image }) => {
+const ProductCard = ({ id, title, price, oldPrice, brand, rating, image }) => {
     return (
         <div className="bg-bg-card rounded-xl shadow p-3 sm:p-4">
-            <img
-                src={image}
-                className="w-full h-40 sm:h-48 object-cover rounded-lg"
-            />
+            <Link to={`/products/${id}`}>
+                <img src={image} className="w-full h-40 sm:h-48 object-cover rounded-lg" />
+            </Link>
             <p className="text-xs text-text-light mt-2">{brand}</p>
 
             <h3 className="font-semibold text-sm line-clamp-2">{title}</h3>

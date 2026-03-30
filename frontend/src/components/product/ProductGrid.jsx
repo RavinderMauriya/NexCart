@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard";
+import { Link } from "react-router-dom";
 
 const ProductGrid = ({ products }) => {
   return (

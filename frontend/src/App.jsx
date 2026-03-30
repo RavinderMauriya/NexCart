@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import MobileBottomNav from "./components/mobileBottomNav";
 import Footer from './components/Footer'
 import ProductPage from "./pages/ProductPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/orders" element={<div />} />
         <Route path="/cart" element={<div />} />
         <Route path="/profile" element={<div />} />

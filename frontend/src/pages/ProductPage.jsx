@@ -7,7 +7,7 @@ import SortBar from "../components/product/SortBar";
 const ProductPage = () => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="p-4 md:p-6">
+    <div className="bg-bg-main p-4 md:p-6">
 
       {/* Mobile Filter Button */}
       <div className="md:hidden mb-4">

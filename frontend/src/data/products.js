@@ -6,8 +6,9 @@ export const products = [
         price: 1999,
         oldPrice: null,
         brand: "Apple",
-        rating: 5,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBkzZ7iHHzjPhbfpbFC7-LLr-J_k3Y8WH6Y8n_VEb32mIUbOH0DesiFDnlvuMW8ALhqDN7wxqiSxf_43OyzLUt0kpnANUw78G5PHX0lDD6T-Ei3TIndrq4XgBYZtW86sFviojJW5bPQ40-hwL4M7WvUfE1vWEHdKKJ7AnxEIxWeZsuvqR4NpPvA1zwadMf5Tsy44QBbuJo2rE4joB3yrdG8ETHfbIAwmrKBBuiIFpLfKn5EN_X4DsIqmbH3qWqAQvm4NHYkO1Iofv4",
+        rating: 4,
+        images: ["https://lh3.googleusercontent.com/aida-public/AB6AXuBkzZ7iHHzjPhbfpbFC7-LLr-J_k3Y8WH6Y8n_VEb32mIUbOH0DesiFDnlvuMW8ALhqDN7wxqiSxf_43OyzLUt0kpnANUw78G5PHX0lDD6T-Ei3TIndrq4XgBYZtW86sFviojJW5bPQ40-hwL4M7WvUfE1vWEHdKKJ7AnxEIxWeZsuvqR4NpPvA1zwadMf5Tsy44QBbuJo2rE4joB3yrdG8ETHfbIAwmrKBBuiIFpLfKn5EN_X4DsIqmbH3qWqAQvm4NHYkO1Iofv4", "https://lh3.googleusercontent.com/aida-public/AB6AXuBkzZ7iHHzjPhbfpbFC7-LLr-J_k3Y8WH6Y8n_VEb32mIUbOH0DesiFDnlvuMW8ALhqDN7wxqiSxf_43OyzLUt0kpnANUw78G5PHX0lDD6T-Ei3TIndrq4XgBYZtW86sFviojJW5bPQ40-hwL4M7WvUfE1vWEHdKKJ7AnxEIxWeZsuvqR4NpPvA1zwadMf5Tsy44QBbuJo2rE4joB3yrdG8ETHfbIAwmrKBBuiIFpLfKn5EN_X4DsIqmbH3qWqAQvm4NHYkO1Iofv4", "https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY"],
+        description: [],
         category: "laptop",
     },
     {
@@ -17,7 +18,7 @@ export const products = [
         oldPrice: 399,
         brand: "Sony",
         rating: 5,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY",
+        images: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY"],
         category: "audio",
     },
     {
@@ -27,7 +28,7 @@ export const products = [
         oldPrice: 399,
         brand: "Sony",
         rating: 5,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY",
+        images: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY"],
         category: "audio",
     },
     {
@@ -37,7 +38,7 @@ export const products = [
         oldPrice: 399,
         brand: "Sony",
         rating: 5,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY",
+        images: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY"],
         category: "audio",
     },
     {
@@ -46,8 +47,8 @@ export const products = [
         price: 348,
         oldPrice: 399,
         brand: "Sony",
-        rating: 5,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY",
+        rating: 2,
+        images: ["https://lh3.googleusercontent.com/aida-public/AB6AXuCnxvTjXVoOnb2XJ1IjTjDpY4YTJrqoGRT9hKA-mq6sOn45UN2mvzkviGhRaifQNWGNlIN4yUChaiuptb8E3fQi2wzOfmGqZQoy-y1xCTRZyzH-_YUYN6tLyzR0UiMCqG2mW-4OBVxJxMCvKC6Yc5ImDcZx0evJlGKhsnTgoZ8C3AmMGFXXrtHjQUGNy4fnR36OegzHsitMY1E5bI7Otp6MzXGk1Vpa5QGYRnDrViCREIVvsbvAVS5xyV4UBSzqqyeYRx5xAKanjSY"],
         category: "audio",
     },
 ];
