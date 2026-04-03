@@ -4,14 +4,18 @@ import SlideBackground from '../components/SlideBackground'
 import PromoSection from '../components/PromoSection'
 import LogoTicker from '../components/LogoTicker'
 import HomeCategoryProduct from '../components/HomeCategoryProduct'
+import ScrollSection from '../components/ScrollSection'
+import Section from '../components/Section'
 
 const Home = () => {
   return (
     <div className='bg-bg-main'>
       <SlideBackground/>
       <CircularIcons/>
+      <Section/>
       <PromoSection/>
       <LogoTicker/>
+      <ScrollSection/>
       <HomeCategoryProduct/>
     </div>
   )

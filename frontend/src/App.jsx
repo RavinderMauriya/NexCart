@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
@@ -6,8 +7,11 @@ import Footer from './components/Footer'
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
+import LoginModel from './pages/LoginModel'
 
 const App = () => {
+  const [loginModel, setLoginModel] = useState(false);
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -19,8 +23,10 @@ const App = () => {
         <Route path="/orders" element={<div />} />
         <Route path="/profile" element={<div />} />
       </Routes>
-      <Footer/>
-      <MobileBottomNav/>
+      <Footer />
+
+      {loginModel && <LoginModel onClose={()=>setLoginModel(false)} />}
+      <MobileBottomNav />
     </BrowserRouter>
   );
 };
