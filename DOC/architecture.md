@@ -168,7 +168,7 @@ Example:
 
 ---
 
-## 11. Logging (Recommended)
+## 11. Logging (*)
 
 * Request logs
 * Error logs

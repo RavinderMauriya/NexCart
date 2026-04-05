@@ -3,6 +3,7 @@ import asyncHandler from '../utils/asyncHandler.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
+//REGISTER
 export const register = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -18,9 +19,23 @@ export const register = asyncHandler(async (req, res) => {
     res.status(201).json({ success: true, message: "user register successfully" });
 })
 
+//LOGIN
 export const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-
+    //admin login
+    if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+        const accessToken = jwt.sign(
+            { userId: "admin", role: "admin" },
+            process.env.AC_SECRET_KEY,
+            { expiresIn: "15m" }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            accessToken
+        });
+    }
+    //user login
     const user = await User.findOne({ email });
     if (!user) {
         return res.status(401).json({
@@ -63,6 +78,7 @@ export const login = asyncHandler(async (req, res) => {
     });
 });
 
+//REFRESH
 export const refresh = asyncHandler(async (req, res) => {
     const token = req.cookies.refreshToken;
 
@@ -77,7 +93,7 @@ export const refresh = asyncHandler(async (req, res) => {
             { expiresIn: "15m" }
         );
 
-        res.json({ accessToken: newAccessToken });
+        res.json({ success: true, message: "Access token refreshed", accessToken: newAccessToken });
 
     } catch (err) {
         return res.sendStatus(403);

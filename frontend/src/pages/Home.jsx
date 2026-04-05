@@ -1,11 +1,11 @@
 import React from 'react'
-import CircularIcons from '../components/CircularIcons'
-import SlideBackground from '../components/SlideBackground'
-import PromoSection from '../components/PromoSection'
-import LogoTicker from '../components/LogoTicker'
-import HomeCategoryProduct from '../components/HomeCategoryProduct'
-import ScrollSection from '../components/ScrollSection'
-import Section from '../components/Section'
+import CircularIcons from '../components/home/CircularIcons'
+import SlideBackground from '../components/home/SlideBackground'
+import PromoSection from '../components/home/PromoSection'
+import LogoTicker from '../components/home/LogoTicker'
+import HomeCategoryProduct from '../components/home/HomeCategoryProduct'
+import ScrollSection from '../components/home/ScrollSection'
+import Section from '../components/home/Section'
 
 const Home = () => {
   return (

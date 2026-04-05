@@ -39,7 +39,7 @@ const Section = () => {
           {products.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition"
+              className="bg-bg-card rounded-xl p-3 shadow-sm hover:shadow-md transition"
             >
               <img
                 src={item.image}

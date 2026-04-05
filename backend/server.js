@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import authRouter from './routes/authRoute.js'
+import productRouter from './routes/productRoute.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
     res.json({ success: true, message: "API running" })
 })
 app.use("/api/auth", authRouter);
+app.use("/api/products", productRouter);
 
 //catch err
 app.use((err, req, res, next) => {
