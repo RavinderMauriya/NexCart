@@ -1,6 +1,5 @@
 import Product from "../models/productSchema.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import Category from '../models/categorySchema.js'
 
 export const getProducts = asyncHandler(async (req, res) => {
     let {
@@ -272,58 +271,4 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     });
 });
 
-//create category product using category model
-export const addCategory = asyncHandler(async (req, res) => {
-    const { name, parent } = req.body;
 
-    // Basic validation
-    if (!name) {
-        return res.status(400).json({
-            success: false,
-            message: "Category name is required"
-        });
-    }
-
-    const normalizedName = name.trim().toLowerCase();
-
-    // Check duplicate
-    const existing = await Category.findOne({ name: normalizedName });
-    if (existing) {
-        return res.status(400).json({
-            success: false,
-            message: "Category already exists"
-        });
-    }
-
-    // Validate parent (if provided)
-    let parentCategory = null;
-
-    if (parent) {
-        if (!mongoose.Types.ObjectId.isValid(parent)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid parent category ID"
-            });
-        }
-
-        parentCategory = await Category.findById(parent);
-
-        if (!parentCategory) {
-            return res.status(404).json({
-                success: false,
-                message: "Parent category not found"
-            });
-        }
-    }
-
-    const category = await Category.create({
-        name: normalizedName,
-        parent: parentCategory ? parentCategory._id : null
-    });
-
-    res.status(201).json({
-        success: true,
-        data: category
-    });
-
-});

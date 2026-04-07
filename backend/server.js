@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import authRouter from './routes/authRoute.js'
 import productRouter from './routes/productRoute.js'
+import productCategory from './routes/categoryRoute.js'
+import authMiddleware from './middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
@@ -28,6 +30,7 @@ app.get("/", (req, res) => {
 })
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
+app.use("/api/category", authMiddleware("admin"), productCategory);
 
 //catch err
 app.use((err, req, res, next) => {
