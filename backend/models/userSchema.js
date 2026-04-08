@@ -37,7 +37,12 @@ const userSchema = new mongoose.Schema({
         state: { type: String },
         addressLine: { type: String },
         isDefault: { type: Boolean, default: false }
-    }]
+    }],
+    profileImage:{
+        fileName:String,
+        url:String,
+        fileId:String
+    }
 }, {
     timestamps: true,
 })

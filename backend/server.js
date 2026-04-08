@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import authRouter from './routes/authRoute.js'
 import productRouter from './routes/productRoute.js'
 import productCategory from './routes/categoryRoute.js'
+import cartRoute from './routes/cartRoute.js'
 import authMiddleware from './middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -31,7 +32,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/category", authMiddleware("admin"), productCategory);
-
+app.use("/api/cart", cartRoute)
 //catch err
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({

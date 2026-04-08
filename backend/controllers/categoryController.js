@@ -77,3 +77,10 @@ export const getCategory = asyncHandler(async (req, res) => {
     const categoryData = await Category.find().populate("parent", "name");;
     res.status(200).json({ success: true, message: "fetch successfully", data: categoryData })
 });
+
+//delete category
+export const deleteCategory = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    await Category.findById(id);
+    res.status(200).json({ success: true, message: "category deleted" })
+})

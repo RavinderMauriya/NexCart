@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema({
             attributes: Object,
             price: { type: Number, required: true },
             discountPrice: Number,
-            stock: { type: String, default: 0 },
+            stock: { type: Number, default: 0 },
             sku: { type: String, unique: true },
             images: [String]
         }
@@ -44,14 +44,6 @@ const productSchema = new mongoose.Schema({
     timestamps: true,
 })
 
+productSchema.index({ title: "text" });
+
 export default mongoose.model("Product", productSchema);
-
-
-
-
-
-// price: {
-//     type: Number,
-//     index: true
-// },
-// add in root ok this schema for max and min price filter
