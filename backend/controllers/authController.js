@@ -27,12 +27,12 @@ export const login = asyncHandler(async (req, res) => {
         const accessToken = jwt.sign(
             { userId: "admin", role: "admin" },
             process.env.AC_SECRET_KEY,
-            { expiresIn: "15m" }
+            { expiresIn: "1d" }
         );
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            accessToken
+            accessToken,
         });
     }
     //user login
@@ -60,7 +60,7 @@ export const login = asyncHandler(async (req, res) => {
     const accessToken = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.AC_SECRET_KEY,
-        { expiresIn: "6h" }
+        { expiresIn: "15m" }
     );
 
     //set refresh token in cookie

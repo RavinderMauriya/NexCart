@@ -1,10 +1,12 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import authRouter from './routes/authRoute.js'
+import authRoute from './routes/authRoute.js'
 import productRouter from './routes/productRoute.js'
 import productCategory from './routes/categoryRoute.js'
 import cartRoute from './routes/cartRoute.js'
+import orderRoute from './routes/orderRoute.js'
+import reviewRoute from './routes/reviewRoute.js'
 import authMiddleware from './middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -27,14 +29,18 @@ app.use((req, res, next) => {
     next();
 })
 
+
 //routes start
 app.get("/", (req, res) => {
     res.json({ success: true, message: "API running" })
 })
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authRoute);
 app.use("/api/products", productRouter);
 app.use("/api/category", authMiddleware("admin"), productCategory);
-app.use("/api/cart", cartRoute)
+app.use("/api/cart", cartRoute);
+app.use("/api/orders", orderRoute);
+app.use("/api/reviews", reviewRoute);
+
 //catch err
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({

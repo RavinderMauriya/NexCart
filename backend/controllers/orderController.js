@@ -254,3 +254,53 @@ export const cancelOrder = asyncHandler(async (req, res) => {
         message: "Order cancelled",
     });
 });
+
+//RETURN ORDER (only delivered product)
+export const returnOrder = asyncHandler(async (req, res) => {
+    const { orderId, reason } = req.body;
+
+    if (!orderId) {
+        return res.status(400).json({
+            success: false,
+            message: "Order ID is required"
+        });
+    }
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+        return res.status(404).json({
+            success: false,
+            message: "Order not found"
+        });
+    }
+
+    // user should own this order
+    if (order.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({
+            success: false,
+            message: "Not authorized"
+        });
+    }
+
+    // 🔴 BUSINESS RULE: only delivered orders can be returned
+    if (order.status !== "delivered") {
+        return res.status(400).json({
+            success: false,
+            message: "Only delivered orders can be returned"
+        });
+    }
+
+    // update status
+    order.status = "returned";
+
+    order.returnReason = reason;
+
+    await order.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Order returned successfully",
+        data: order
+    });
+});
