@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
     minPrice: { type: Number, required: true, index: true },
     brand: {
         type: String,
+        lowercase:true,
         index: true,
     },
     category: {
@@ -38,7 +39,7 @@ const productSchema = new mongoose.Schema({
         }
     ],
 
-    ratings: { type: Number, default: 0 },
+    rating: { type: Number, default: 0 },
     numReviews: { type: Number, default: 0 },
 }, {
     timestamps: true,

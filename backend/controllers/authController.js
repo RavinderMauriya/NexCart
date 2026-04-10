@@ -60,7 +60,7 @@ export const login = asyncHandler(async (req, res) => {
     const accessToken = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.AC_SECRET_KEY,
-        { expiresIn: "15m" }
+        { expiresIn: "6h" }
     );
 
     //set refresh token in cookie
@@ -82,7 +82,7 @@ export const login = asyncHandler(async (req, res) => {
 export const refresh = asyncHandler(async (req, res) => {
     const token = req.cookies.refreshToken;
 
-    if (!token) return res.sendStatus(401);
+    if (!token) res.status(401).json({ success: false, message: "Refresh token not found" });
 
     try {
         const decoded = jwt.verify(token, process.env.RF_SECRET_KEY);

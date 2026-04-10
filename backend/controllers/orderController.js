@@ -1,12 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Cart from "../models/cartModel.js";
-import Order from "../models/orderModel.js";
-import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
-import crypto from "crypto";
+import User from "../models/userModel.js";
 import Razorpay from "razorpay";
 
-// CREATE ORDER
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -14,41 +11,47 @@ const razorpay = new Razorpay({
 
 export const createOrder = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const { addressId, paymentMethod } = req.body;
+    const { addressId, paymentMethod, items } = req.body;
 
     if (!addressId || !paymentMethod) {
         return res.status(400).json({ success: false, message: "Missing fields" });
     }
 
-    // 1. USER + ADDRESS
+    // USER + ADDRESS
     const user = await User.findById(userId);
-    const address = user.addresses.id(addressId);
+    if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+    }
 
+    const address = user.addresses.id(addressId);
     if (!address) {
         return res.status(404).json({ success: false, message: "Address not found" });
     }
 
-    // 2. CART
-    const cart = await Cart.findOne({ user: userId });
+    // GET ITEMS
+    let finalItems = [];
 
-    if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ success: false, message: "Cart empty" });
+    if (items && items.length > 0) {
+        finalItems = items; // BUY NOW
+    } else {
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ success: false, message: "Cart empty" });
+        }
+        finalItems = cart.items;
     }
 
     let totalAmount = 0;
     const orderItems = [];
 
-    // 3. LOOP ITEMS (STRICT VALIDATION)
-    for (const item of cart.items) {
-        const product = await Product.findById(item.product);
-
+    // VALIDATE + BUILD SNAPSHOT
+    for (const item of finalItems) {
+        const product = await Product.findById(item.product || item.productId);
         if (!product) throw new Error("Product not found");
 
         const variant = product.variants.id(item.variantId);
-
         if (!variant) throw new Error("Variant not found");
 
-        // STOCK CHECK
         if (variant.stock < item.quantity) {
             return res.status(400).json({
                 success: false,
@@ -58,67 +61,76 @@ export const createOrder = asyncHandler(async (req, res) => {
 
         const price = variant.discountPrice || variant.price;
 
-        totalAmount += price * item.quantity;
-
-        // PUSH SNAPSHOT
         orderItems.push({
-            productId: product._id,
+            productId: product._id.toString(),
             title: product.title,
-            variant: variant.attributes,
+            variant,
             quantity: item.quantity,
             price,
         });
 
-        // REDUCE STOCK
-        variant.stock -= item.quantity;
-        await product.save();
+        totalAmount += price * item.quantity;
     }
 
-    // 4. CREATE ORDER
+    // CREATE ORDER (DB FIRST)
     const order = await Order.create({
         user: userId,
         items: orderItems,
         totalAmount,
         paymentMethod,
+        paymentStatus: "pending",
         address,
     });
 
-    // 5. CLEAR CART
-    await Cart.findOneAndDelete({ user: userId });
-
-    // 6. COD FLOW
+    // COD FLOW
     if (paymentMethod === "COD") {
+        // OPTIONAL: reduce stock + clear cart here
+
         return res.status(201).json({
             success: true,
-            data: order,
+            data: {
+                type: "COD",
+                orderId: order._id,
+                amount: totalAmount,
+            },
         });
     }
 
-    // 7. RAZORPAY ORDER
+    // ONLINE FLOW → RAZORPAY
     const razorpayOrder = await razorpay.orders.create({
-        amount: totalAmount * 100,
+        amount: totalAmount * 100, // paise
         currency: "INR",
         receipt: order._id.toString(),
     });
 
-    // SAVE RAZORPAY ID
-    order.razorpayOrderId = razorpayOrder.id;
-    await order.save();
-
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         data: {
-            order,
+            type: "ONLINE",
+            orderId: order._id,
             razorpayOrder,
+            amount: totalAmount,
         },
     });
 });
 
-
 //VERIFY PAYMENT
-export const verifyPayment = asyncHandler(async (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+import crypto from "crypto";
+import Order from "../models/orderModel.js";
 
+export const verifyPayment = asyncHandler(async (req, res) => {
+    const {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        orderId, // DB ORDER ID (must come from frontend)
+    } = req.body;
+
+    if (!orderId) {
+        return res.status(400).json({ success: false, message: "OrderId missing" });
+    }
+
+    // VERIFY SIGNATURE
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSignature = crypto
@@ -127,24 +139,54 @@ export const verifyPayment = asyncHandler(async (req, res) => {
         .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-        return res.status(400).json({ success: false, message: "Payment verification failed" });
+        return res.status(400).json({ success: false, message: "Invalid signature" });
     }
 
-    // update order
-    const order = await Order.findOne({ razorpayOrderId: razorpay_order_id });
-
+    // FIND ORDER
+    const order = await Order.findById(orderId);
     if (!order) {
         return res.status(404).json({ success: false, message: "Order not found" });
     }
 
+    // IDEMPOTENCY CHECK
+    if (order.paymentStatus === "paid") {
+        return res.status(200).json({
+            success: true,
+            message: "Already verified",
+            data: order,
+        });
+    }
+
+    // UPDATE ORDER STATUS
     order.paymentStatus = "paid";
     order.status = "confirmed";
 
+    // REDUCE STOCK
+    for (const item of order.items) {
+        const product = await Product.findById(item.productId);
+
+        const variant = product.variants.id(item.variant._id);
+
+        if (!variant || variant.stock < item.quantity) {
+            return res.status(400).json({
+                success: false,
+                message: `${item.title} out of stock`,
+            });
+        }
+
+        variant.stock -= item.quantity;
+        await product.save();
+    }
+
     await order.save();
 
-    res.status(200).json({
+    // CLEAR CART
+    await Cart.findOneAndDelete({ user: order.user });
+
+    return res.status(200).json({
         success: true,
         message: "Payment verified",
+        data: order,
     });
 });
 
