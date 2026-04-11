@@ -1,8 +1,11 @@
-import asyncHandler from "express-async-handler";
+import asyncHandler from "../utils/asyncHandler.js";
 import Cart from "../models/cartModel.js";
-import Product from "../models/productModel.js";
-import User from "../models/userModel.js";
+import Product from "../models/productSchema.js";
+import User from "../models/userSchema.js";
 import Razorpay from "razorpay";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -116,7 +119,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 //VERIFY PAYMENT
 import crypto from "crypto";
-import Order from "../models/orderModel.js";
+import Order from "../models/orderSchema.js";
 
 export const verifyPayment = asyncHandler(async (req, res) => {
     const {

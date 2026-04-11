@@ -1,6 +1,9 @@
-import User from '../models/User.js';
+import User from '../models/userSchema.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import ImageKit from "@imagekit/nodejs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
