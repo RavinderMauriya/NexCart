@@ -1,298 +1,356 @@
 import Product from "../models/productSchema.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import imagekit from "../utils/imagekit.js";
+
+// Upload images to ImageKit
+const uploadToImageKit = async (files) => {
+  const uploadPromises = files.map((file) => {
+    return new Promise((resolve, reject) => {
+      imagekit.upload(
+        {
+          file: file.buffer.toString("base64"),
+          fileName: file.originalname,
+          folder: "/NexCart/Products",
+        },
+        (error, result) => {
+          if (error) {
+            console.error("ImageKit upload error:", error);
+            reject(error);
+          } else {
+            resolve(result.url);
+          }
+        },
+      );
+    });
+  });
+
+  return Promise.all(uploadPromises);
+};
 
 export const getProducts = asyncHandler(async (req, res) => {
-    let {
-        page = 1,
-        limit = 10,
-        search,
-        category,
-        minPrice,
-        maxPrice,
-        brand,
-        rating,
-        sort
-    } = req.query;
+  let {
+    page = 1,
+    limit = 10,
+    search,
+    category,
+    minPrice,
+    maxPrice,
+    brand,
+    rating,
+    sort,
+  } = req.query;
 
-    page = Number(page);
-    limit = Number(limit);
+  page = Number(page);
+  limit = Number(limit);
 
-    const query = {};
+  const query = {};
 
-    // TEXT SEARCH (text index)
-    if (search) {
-        query.$text = { $search: search };
+  // TEXT SEARCH (text index)
+  if (search) {
+    query.$text = { $search: search };
+  }
+
+  // BASIC FILTERS
+  if (category) query.category = category;
+  if (brand) query.brand = brand;
+
+  if (rating && !isNaN(rating)) {
+    query.rating = { $gte: Number(rating) };
+  }
+
+  // PRICE RANGE FILTER
+  if (minPrice || maxPrice) {
+    query.$and = [];
+
+    if (minPrice && !isNaN(minPrice)) {
+      query.$and.push({ maxPrice: { $gte: Number(minPrice) } });
     }
 
-    // BASIC FILTERS
-    if (category) query.category = category;
-    if (brand) query.brand = brand;
-
-    if (rating && !isNaN(rating)) {
-        query.rating = { $gte: Number(rating) };
+    if (maxPrice && !isNaN(maxPrice)) {
+      query.$and.push({ minPrice: { $lte: Number(maxPrice) } });
     }
+  }
 
-    // PRICE RANGE FILTER
-    if (minPrice || maxPrice) {
-        query.$and = [];
+  // SORTING
+  let sortOption = {};
 
-        if (minPrice && !isNaN(minPrice)) {
-            query.$and.push({ maxPrice: { $gte: Number(minPrice) } });
-        }
+  switch (sort) {
+    case "price_asc":
+      sortOption.minPrice = 1;
+      break;
+    case "price_desc":
+      sortOption.minPrice = -1;
+      break;
+    case "newest":
+      sortOption.createdAt = -1;
+      break;
+    case "rating":
+      sortOption.rating = -1;
+      break;
+    default:
+      sortOption.createdAt = -1;
+  }
 
-        if (maxPrice && !isNaN(maxPrice)) {
-            query.$and.push({ minPrice: { $lte: Number(maxPrice) } });
-        }
-    }
+  const products = await Product.find(query)
+    .populate("category", "name")
+    .sort(sortOption)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean(); //for js object and faster fetch
 
-    // SORTING
-    let sortOption = {};
+  const total = await Product.countDocuments(query);
 
-    switch (sort) {
-        case "price_asc":
-            sortOption.minPrice = 1;
-            break;
-        case "price_desc":
-            sortOption.minPrice = -1;
-            break;
-        case "newest":
-            sortOption.createdAt = -1;
-            break;
-        case "rating":
-            sortOption.rating = -1;
-            break;
-        default:
-            sortOption.createdAt = -1;
-    }
-
-    const products = await Product.find(query)
-        .populate("category", "name")
-        .sort(sortOption)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(); //for js object and faster fetch
-
-    const total = await Product.countDocuments(query);
-
-    res.json({
-        success: true,
-        data: {
-            products,
-            pagination: {
-                total,
-                page,
-                pages: Math.ceil(total / limit)
-            }
-        }
-    });
+  res.json({
+    success: true,
+    data: {
+      products,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+      },
+    },
+  });
 });
 
 //get product by id
 export const getProductById = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const product = await Product.findById(id).populate("category", "name");
+  const { id } = req.params;
+  const product = await Product.findById(id).populate("category", "name");
 
-    if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "product not found"
-        })
-    }
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "product not found",
+    });
+  }
 
-    res.status(200).json({
-        success: true,
-        product
-    })
-})
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
 
-//create/add product
+// create/add product
 export const addProduct = asyncHandler(async (req, res) => {
-    // Destructure required data from request body
-    const {
-        title,
-        description,
-        brand,
-        category,
-        attributes,
-        variants,
-    } = req.body;
+  // Destructure required data from request body
+  const { title, description, brand, category, attributes, variants } =
+    req.body;
 
-    // Validate required fields
-    if (!title || !description || !category || !variants?.length) {
-        return res.status(400).json({
-            success: false,
-            message: "Missing required fields"
-        });
+  // Validate required fields
+  if (!title || !description || !category || !variants?.length) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+    });
+  }
+
+  // Validate at least one variant exists
+  if (!variants || variants.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "At least one variant is required",
+    });
+  }
+
+  // UPLOAD IMAGES TO IMAGEKIT
+  let uploadedImages = [];
+
+  if (req.files && req.files.length > 0) {
+    try {
+      uploadedImages = await uploadToImageKit(req.files);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Image upload failed",
+        error: error.message,
+      });
+    }
+  }
+
+  // Process each variant and calculate prices
+  const processedVariants = variants.map((variant, index) => {
+    // Validate price exists and is greater than 0
+    if (!variant.price || variant.price <= 0) {
+      throw new Error(`Variant ${index}: Price must be a positive number`);
     }
 
-    // Validate at least one variant exists
-    if (!variants || variants.length === 0) {
-        return res.status(400).json({
-            success: false,
-            message: "At least one variant is required"
-        });
+    // Validate discount price if provided
+    if (variant.discountPrice && variant.discountPrice >= variant.price) {
+      throw new Error(
+        `Variant ${index}: Discount price must be less than original price`,
+      );
     }
 
-    // Process each variant and calculate prices
-    const processedVariants = variants.map((variant, index) => {
-        // Validate price exists and is greater than 0
-        if (!variant.price || variant.price <= 0) {
-            throw new Error(`Variant ${index}: Price must be a positive number`);
-        }
+    // Auto-generate SKU from product title and variant attributes
+    const baseSku = title.replace(/\s+/g, "").toLowerCase();
+    const attributeSku = Object.values(variant.attributes || {})
+      .filter(Boolean)
+      .map((attr) => String(attr).replace(/\s+/g, ""))
+      .join("-")
+      .toLowerCase();
 
-        // Validate discount price if provided
-        if (variant.discountPrice && variant.discountPrice >= variant.price) {
-            throw new Error(`Variant ${index}: Discount price must be less than original price`);
-        }
+    const autoGeneratedSku = attributeSku
+      ? `${baseSku}-${attributeSku}`
+      : baseSku;
 
-        // Auto-generate SKU from product title and variant attributes
-        // Example: "iPhone 14" + "256GB" + "Black" = "iPhone14-256GB-Black"
-        const baseSku = title.replace(/\s+/g, '').toLowerCase();
-        const attributeSku = Object.values(variant.attributes || {})
-            .filter(Boolean)
-            .map(attr => String(attr).replace(/\s+/g, ''))
-            .join('-')
-            .toLowerCase();
+    return {
+      attributes: variant.attributes,
+      price: variant.price,
+      discountPrice: variant.discountPrice || null,
+      stock: variant.stock,
+      sku: autoGeneratedSku,
+      images: Array.isArray(variant.images) && variant.images.length > 0
+        ? variant.images
+        : uploadedImages[index]
+          ? [uploadedImages[index]]
+          : [],
+    };
+  });
 
-        const autoGeneratedSku = attributeSku ? `${baseSku}-${attributeSku}` : baseSku;
+  // Extract all prices from processed variants
+  const prices = processedVariants.map((v) => v.discountPrice || v.price);
 
-        return {
-            attributes: variant.attributes,
-            price: variant.price,
-            discountPrice: variant.discountPrice || null,
-            stock: variant.stock,
-            sku: autoGeneratedSku,
-            // images: variant.images || []
-        };
-    });
+  // Calculate minimum and maximum prices
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
 
-    // Extract all prices from processed variants
-    const prices = processedVariants.map(v => v.discountPrice || v.price);
+  // Create product in database
+  const product = await Product.create({
+    title,
+    description,
+    brand,
+    category,
+    attributes,
+    variants: processedVariants,
+    minPrice,
+    maxPrice,
+  });
 
-    // Calculate minimum and maximum prices
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
-
-    // Create product in database
-    const product = await Product.create({
-        title,
-        description,
-        brand,
-        category,
-        attributes,
-        variants: processedVariants,
-        minPrice,
-        maxPrice,
-    });
-
-    // Return success response with created product
-    res.status(201).json({
-        success: true,
-        message: "Product created successfully",
-        data: product,
-    });
+  // Return success response with created product
+  res.status(201).json({
+    success: true,
+    message: "Product created successfully",
+    data: product,
+  });
 });
 
 //update product
 export const updateProduct = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const {
-        title,
-        description,
-        brand,
-        category,
-        attributes,
-        variants
-    } = req.body;
+  const { title, description, brand, category, attributes, variants } =
+    req.body;
 
-    //find product
-    const product = await Product.findById(id);
+  //find product
+  const product = await Product.findById(id);
 
-    if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "Product not found"
-        });
-    }
-
-    //update basic fields(only if provided)
-    if (title) product.title = title;
-    if (description) product.description = description;
-    if (brand) product.brand = brand;
-    if (category) product.category = category;
-    if (attributes) product.attributes = attributes;
-
-    // if variants updated → recalc prices
-    if (variants && variants.length > 0) {
-
-        // validate variants
-        for (const v of variants) {
-            if (v.price == null || isNaN(v.price) || Number(v.price) <= 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Each variant must have a valid positive price"
-                });
-            }
-
-            if (v.discountPrice != null && Number(v.discountPrice) >= Number(v.price)) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Each variant discountPrice must be less than price"
-                });
-            }
-        }
-
-        const baseSku = (title || product.title).replace(/\s+/g, '').toLowerCase();
-
-        const processedVariants = variants.map((variant) => {
-            const attributeSku = Object.values(variant.attributes || {})
-                .filter(Boolean)
-                .map(attr => String(attr).replace(/\s+/g, ''))
-                .join('-')
-                .toLowerCase();
-
-            const autoGeneratedSku = attributeSku ? `${baseSku}-${attributeSku}` : baseSku;
-
-            return {
-                ...variant,
-                sku: variant.sku || autoGeneratedSku,
-                discountPrice: variant.discountPrice ?? null,
-            };
-        });
-
-        product.variants = processedVariants;
-
-        const prices = processedVariants.map(v => v.discountPrice || v.price);
-        product.minPrice = Math.min(...prices);
-        product.maxPrice = Math.max(...prices);
-    }
-
-    await product.save();
-
-    res.status(200).json({
-        success: true,
-        data: product
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
     });
+  }
+
+  //update basic fields(only if provided)
+  if (title) product.title = title;
+  if (description) product.description = description;
+  if (brand) product.brand = brand;
+  if (category) product.category = category;
+  if (attributes) product.attributes = attributes;
+
+  // UPLOAD IMAGES TO IMAGEKIT (if new files provided)
+  let uploadedImages = [];
+
+  if (req.files && req.files.length > 0) {
+    try {
+      uploadedImages = await uploadToImageKit(req.files);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Image upload failed",
+        error: error.message,
+      });
+    }
+  }
+
+  // if variants updated → recalc prices
+  if (variants && variants.length > 0) {
+    // validate variants
+    for (const v of variants) {
+      if (v.price == null || isNaN(v.price) || Number(v.price) <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Each variant must have a valid positive price",
+        });
+      }
+
+      if (
+        v.discountPrice != null &&
+        Number(v.discountPrice) >= Number(v.price)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Each variant discountPrice must be less than price",
+        });
+      }
+    }
+
+    const baseSku = (title || product.title).replace(/\s+/g, "").toLowerCase();
+
+    const processedVariants = variants.map((variant, index) => {
+      const attributeSku = Object.values(variant.attributes || {})
+        .filter(Boolean)
+        .map((attr) => String(attr).replace(/\s+/g, ""))
+        .join("-")
+        .toLowerCase();
+
+      const autoGeneratedSku = attributeSku
+        ? `${baseSku}-${attributeSku}`
+        : baseSku;
+
+      return {
+        ...variant,
+        sku: variant.sku || autoGeneratedSku,
+        discountPrice: variant.discountPrice ?? null,
+        images: Array.isArray(variant.images) && variant.images.length > 0
+          ? variant.images
+          : uploadedImages[index]
+            ? [uploadedImages[index]]
+            : [],
+      };
+    });
+
+    product.variants = processedVariants;
+
+    const prices = processedVariants.map((v) => v.discountPrice || v.price);
+    product.minPrice = Math.min(...prices);
+    product.maxPrice = Math.max(...prices);
+  }
+
+  await product.save();
+
+  res.status(200).json({
+    success: true,
+    data: product,
+  });
 });
 
 //delete product
 export const deleteProduct = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const product = await Product.findByIdAndDelete(id);
+  const product = await Product.findByIdAndDelete(id);
 
-    if (!product) {
-        return res.status(404).json({
-            success: false,
-            message: "Product not found"
-        });
-    }
-
-    res.status(200).json({
-        success: true,
-        message: "Product deleted successfully"
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
     });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+  });
 });
-
-
