@@ -1,5 +1,6 @@
 import User from '../models/userSchema.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import bcrypt from 'bcrypt';
 import ImageKit from "@imagekit/nodejs";
 import dotenv from "dotenv";
 
@@ -46,7 +47,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
         user.name = name;
     }
     if (password) {
-        user.password = password;
+        const hash = await bcrypt.hash(password, 10);
+        user.password = hash;
     }
 
     await user.save();
@@ -90,15 +92,15 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
 
     //first delete the existing avatar if exists
     if (user.profileImage && user.profileImage.fileId) {
-        await imagekit.deleteFile(user.profileImage.fileId);
+        await imagekit.files.delete(user.profileImage.fileId);
     }
 
     //upload new avatar
-    const result = await imagekit.upload({
+    const result = await imagekit.files.upload({
         file: file.buffer.toString("base64"),
         fileName: file.originalname,
         folder: "NexCart/Users"
-    })
+    });
 
     user.profileImage.url = result.url;
     user.profileImage.fileId = result.fileId;
