@@ -7,6 +7,7 @@ import productCategory from './routes/categoryRoute.js'
 import cartRoute from './routes/cartRoute.js'
 import orderRoute from './routes/orderRoute.js'
 import reviewRoute from './routes/reviewRoute.js'
+import userRoute from './routes/userRoute.js'
 import authMiddleware from './middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -40,6 +41,8 @@ app.use("/api/category", authMiddleware("admin"), productCategory);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
+app.use("/api/user/profile", userRoute);
+
 
 //catch err
 app.use((err, req, res, next) => {
@@ -48,6 +51,7 @@ app.use((err, req, res, next) => {
         message: err.message
     });
 });
+
 
 //db connection
 mongoose.connect(process.env.MONGO_URI)

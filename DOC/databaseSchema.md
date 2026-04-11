@@ -72,7 +72,8 @@ const productSchema = new mongoose.Schema({
       images: [String]
     }
   ],
-
+  maxPrice: { type: Number, required: true, index: true },
+  minPrice: { type: Number, required: true, index: true },
   rating: { type: Number, default: 0 },
   numReviews: { type: Number, default: 0 },
 
