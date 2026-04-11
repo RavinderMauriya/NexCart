@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 
 export const postReview = asyncHandler(async (req, res) => {
     const review = new Review({
-        user: req.user._id,
+        user: req.userId,
         product: req.body.product,
         rating: req.body.rating,
     })

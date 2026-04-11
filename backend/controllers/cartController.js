@@ -4,14 +4,14 @@ import asyncHandler from '../utils/asyncHandler.js'
 
 //get cart
 export const getCart = asyncHandler(async (req, res) => {
-    const cartItem = await Cart.find({ user: req.user.id }).populate("items.product");
+    const cartItem = await Cart.find({ user: req.userId }).populate("items.product");
     res.status(200).json({ success: true, data: cartItem })
 });
 
 //add item in cart
 export const addcart = asyncHandler(async (req, res) => {
     const { productId, variantId, quantity = 1 } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     if (!productId || !variantId) {
         return res.status(400).json({ success: false, message: "Missing fields" });
@@ -64,7 +64,7 @@ export const addcart = asyncHandler(async (req, res) => {
 //update cart
 export const updateCart = asyncHandler(async (req, res) => {
     const { productId, variantId, quantity } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     if (!productId || !variantId) {
         return res.status(400).json({ success: false, message: "Missing fields" });
@@ -105,7 +105,7 @@ export const updateCart = asyncHandler(async (req, res) => {
 //remove/delete item in cart
 export const removeCart = asyncHandler(async (req, res) => {
     const { productId, variantId } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const cart = await Cart.findOne({ user: userId });
 

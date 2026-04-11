@@ -13,7 +13,7 @@ const razorpay = new Razorpay({
 });
 
 export const createOrder = asyncHandler(async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.userId;
     const { addressId, paymentMethod, items } = req.body;
 
     if (!addressId || !paymentMethod) {
@@ -196,7 +196,7 @@ export const verifyPayment = asyncHandler(async (req, res) => {
 
 //GET MY ORDERS
 export const getMyOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ user: req.userId }).sort({ createdAt: -1 });
 
     res.status(200).json({
         success: true,
@@ -279,7 +279,7 @@ export const returnOrder = asyncHandler(async (req, res) => {
     }
 
     // user should own this order
-    if (order.user.toString() !== req.user._id.toString()) {
+    if (order.user.toString() !== req.userId.toString()) {
         return res.status(403).json({
             success: false,
             message: "Not authorized"

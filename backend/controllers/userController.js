@@ -14,7 +14,7 @@ const imagekit = new ImageKit({
 
 //get user profile
 export const myProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.userId);
 
     if (!user) {
         return res.status(404).json({
@@ -31,7 +31,7 @@ export const myProfile = asyncHandler(async (req, res) => {
 
 //update user profile
 export const updateProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.userId);
 
     if (!user) {
         return res.status(404).json({
@@ -69,7 +69,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 
 //upload avatar/ profile picture
 export const uploadAvatar = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.userId);
 
     if (!user) {
         return res.status(404).json({
