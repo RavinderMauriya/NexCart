@@ -1,10 +1,14 @@
 import express from "express";
-import { getProductById, getProducts, addProduct, updateProduct, deleteProduct } from "../controllers/productController.js";
+import { getProductById, getProducts, addProduct, updateProduct, deleteProduct, uploadVariantImages } from "../controllers/productController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
 router.get("/", getProducts);
+router.post("/upload", authMiddleware("admin"), upload.array("images", 5), uploadVariantImages);
 router.get("/:id", getProductById);
 router.post("/", authMiddleware("admin"), addProduct);
 router.put("/:id", authMiddleware("admin"), updateProduct);

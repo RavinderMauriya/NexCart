@@ -1,16 +1,6 @@
 import User from '../models/userSchema.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import ImageKit from "@imagekit/nodejs";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const imagekit = new ImageKit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
-});
-
+import imagekit from '../utils/imagekit.js';
 
 //get user profile
 export const myProfile = asyncHandler(async (req, res) => {
@@ -94,7 +84,7 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
 
     //upload new avatar
     const result = await imagekit.upload({
-        file: file.buffer.toString("base64"),
+        file: file.buffer,
         fileName: file.originalname,
         folder: "NexCart/Users"
     })
