@@ -1,7 +1,10 @@
 import { Home, Grid, User, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 const MobileBottomNav = () => {
+  const { openModal } = useContext(AuthContext);
   return (
     <nav className="md:hidden fixed bottom-0 left-0 w-full z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t flex justify-around items-center px-4 py-2 border-border bg-bg-card">
 
@@ -20,10 +23,10 @@ const MobileBottomNav = () => {
         <span className="text-[10px] font-semibold mt-1">Address</span>
       </Link>
 
-      <Link to="/profile" className="flex flex-col items-center text-text-light">
+      <button onClick={() => openModal("login")} className="flex flex-col items-center text-text-light">
         <User size={22} />
         <span className="text-[10px] font-semibold mt-1">Account</span>
-      </Link>
+      </button>
 
     </nav>
   );
