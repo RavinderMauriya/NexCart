@@ -15,6 +15,22 @@ export const AuthProvider = ({ children }) => {
     setIsOpen(false);
   };
 
+  //auth
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
+
+  const login = (data) => {
+    setToken(data.token);
+    localStorage.setItem("token", data.token);
+    setUser(data.user);
+  };
+
+  const logout = () => {
+    setToken(null);
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -22,7 +38,11 @@ export const AuthProvider = ({ children }) => {
         mode,
         setMode,
         openModal,
-        closeModal
+        closeModal,
+        login,
+        user, setUser,
+        token,
+        logout,
       }}
     >
       {children}
