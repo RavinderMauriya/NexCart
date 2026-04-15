@@ -23,6 +23,7 @@ export const authMiddleware = (...roles) => {
             req.user = decoded;
 
             req.userId = decoded.userId;
+            req.role = decoded.role;
 
             // role check only if roles provided
             if (roles.length && !roles.includes(decoded.role)) {

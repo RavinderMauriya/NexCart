@@ -27,7 +27,7 @@ export default function AuthModal() {
 
           <span
             onClick={() => setMode(mode === "login" ? "register" : "login")}
-            className="text-blue-600 ml-1 cursor-pointer"
+            className="text-blue-600 font-bold ml-1 cursor-pointer"
           >
             {mode === "login" ? "Register" : "Login"}
           </span>

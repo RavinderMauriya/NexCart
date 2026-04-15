@@ -10,6 +10,7 @@ import CartPage from "./pages/CartPage";
 //auth and admin routes
 import { AuthProvider } from "./context/authContext";
 import AuthModal from "./components/auth/AuthModal";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminDashboard from "./adminPages/Dashboard";
 import AdminProducts from "./adminPages/Product";
 import AdminCategories from "./adminPages/Categories";
@@ -29,20 +30,21 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/orders" element={<div />} />
-          <Route path="/profile" element={<div />} />
+          <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+          {/* user routes */}
+          <Route path="/orders" element={<ProtectedRoute><div className="pt-20">Orders</div></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><div className="pt-20">Profile</div></ProtectedRoute>} />
 
           {/* admin routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="categories" element={<AdminCategories />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="products/add" element={<AdminAddProduct />} />
-            <Route path="products/:id/images" element={<AdminProductImages />}/>
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="coupons" element={<AdminCoupons />} />
+          <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/add" element={<AdminAddProduct />} />
+              <Route path="products/:id/images" element={<AdminProductImages />}/>
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="coupons" element={<AdminCoupons />} />
           </Route>
           
         </Routes>

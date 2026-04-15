@@ -4,6 +4,12 @@ import imagekit from '../utils/imagekit.js';
 
 //get user profile
 export const myProfile = asyncHandler(async (req, res) => {
+  //if decode token have role = admin 
+  if(req.role === 'admin' && req.userId==='admin'){
+    const user = req.user;
+    return res.status(200).json({success:true, user})
+  }
+
   const user = await User.findById(req.userId);
 
   if (!user) {

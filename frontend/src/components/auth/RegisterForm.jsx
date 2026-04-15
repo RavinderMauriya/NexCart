@@ -1,14 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
 
 export default function RegisterForm() {
+  const { registerHandler, setMode } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  const register = async (e)=>{
+    e.preventDefault();
+    await registerHandler(data);
+    setMode("login");
+  }
+
   return (
-    <form className="space-y-3">
+    <form className="space-y-3" onSubmit={register}>
       <input
         type="text"
         placeholder="Name"
@@ -33,7 +43,7 @@ export default function RegisterForm() {
         onChange={(e) => setData({ ...data, password: e.target.value })}
       />
 
-      <button className="w-full bg-black text-white py-2 rounded-lg">
+      <button type="submit" className="w-full bg-black text-white py-2 rounded-lg">
         Register
       </button>
     </form>
