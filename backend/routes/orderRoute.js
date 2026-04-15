@@ -1,3 +1,4 @@
+// api/orders
 import express from 'express'
 import { createOrder, getAllOrders, getMyOrders, updateOrderStatus, verifyPayment, cancelOrder, returnOrder } from '../controllers/orderController.js';
 import authMiddleware from '../middleware/authMiddleware.js';

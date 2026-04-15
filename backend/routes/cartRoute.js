@@ -1,3 +1,4 @@
+// api/cart
 import express from 'express'
 import { addcart, getCart, removeCart, updateCart } from '../controllers/cartController.js';
 import authMiddleware from '../middleware/authMiddleware.js';

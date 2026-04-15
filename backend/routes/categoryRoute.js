@@ -1,3 +1,4 @@
+// api/category
 import express from 'express'
 import {getCategory, addCategory, updateCategory,deleteCategory } from '../controllers/categoryController.js';
 

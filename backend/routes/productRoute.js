@@ -1,3 +1,4 @@
+// api/products
 import express from "express";
 import { getProductById, getProducts, addProduct, updateProduct, deleteProduct, uploadVariantImages } from "../controllers/productController.js";
 import authMiddleware from "../middleware/authMiddleware.js";

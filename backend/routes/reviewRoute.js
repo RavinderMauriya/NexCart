@@ -1,3 +1,4 @@
+// /api/reviews
 import express from 'express';
 import { postReview, getReviews, deleteReview } from '../controllers/reviewController.js';
 import authMiddleware from '../middleware/authMiddleware.js';

@@ -10,7 +10,7 @@ export const myProfile = asyncHandler(async (req, res) => {
     return res.status(200).json({success:true, user})
   }
 
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.userId).select('-password');
 
   if (!user) {
     return res.status(404).json({
@@ -104,5 +104,25 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
     success: true,
     message: "Avatar uploaded successfully",
     url: result.url,
+  });
+});
+
+
+//toggle block user -- admin
+export const toggleBlock = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+  user.isBlocked = !user.isBlocked;
+  await user.save();
+  res.status(200).json({
+    success: true,
+    message: `User has been ${user.isBlocked ? 'blocked' : 'unblocked'} successfully`,
   });
 });
