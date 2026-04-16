@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 
 export default function RegisterForm() {
-  const { registerHandler, setMode } = useContext(AuthContext);
+  const { register, setMode } = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
@@ -11,14 +11,14 @@ export default function RegisterForm() {
     password: "",
   });
 
-  const register = async (e)=>{
+  const registerHandler = async (e)=>{
     e.preventDefault();
-    await registerHandler(data);
+    await register(data); //authContext register function
     setMode("login");
   }
 
   return (
-    <form className="space-y-3" onSubmit={register}>
+    <form className="space-y-3" onSubmit={registerHandler}>
       <input
         type="text"
         placeholder="Name"

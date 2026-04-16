@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import { apiRequest, API_BASE } from "../services/api";
+import { apiRequest } from "../services/api";
 import Input from "../components/adminDashboard/Input";
 import Button from "../components/adminDashboard/Button";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ export default function AddProduct() {
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // ================= BASIC =================
+  // BASIC
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [brand, setBrand] = useState("");
@@ -17,18 +17,18 @@ export default function AddProduct() {
 
   const [categories, setCategories] = useState([]);
 
-  // ================= ATTRIBUTES =================
+  // ATTRIBUTES
   const [attributes, setAttributes] = useState([]);
   const [attrName, setAttrName] = useState("");
   const [attrValue, setAttrValue] = useState("");
 
-  // ================= VARIANTS =================
+  //  VARIANTS 
   const [variants, setVariants] = useState([]);
 
-  // ================= PRODUCT ID =================
+  //  PRODUCT ID 
   const [productId, setProductId] = useState(null);
 
-  // ================= FETCH CATEGORY =================
+  //  FETCH CATEGORY 
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await apiRequest("/category", "GET", null, token);
@@ -39,12 +39,11 @@ export default function AddProduct() {
     fetchCategories();
   }, []);
 
-  // ================= ADD ATTRIBUTE =================
+  //  ADD ATTRIBUTE 
   const addAttributeValue = () => {
     if (!attrName || !attrValue) return;
 
-    const existing = attributes.find(
-      (a) => a.name.toLowerCase() === attrName.toLowerCase(),
+    const existing = attributes.find((a) => a.name.toLowerCase() === attrName.toLowerCase(),
     );
 
     if (existing) {
@@ -59,7 +58,7 @@ export default function AddProduct() {
     setAttrValue("");
   };
 
-  // ================= GENERATE VARIANTS =================
+  //  GENERATE VARIANTS
   const generateVariants = () => {
     if (attributes.length === 0) return alert("Add attributes first");
 
@@ -91,14 +90,14 @@ export default function AddProduct() {
     setVariants(finalVariants);
   };
 
-  // ================= UPDATE VARIANT =================
+  //  UPDATE VARIANT
   const updateVariant = (index, field, value) => {
     const updated = [...variants];
     updated[index][field] = value;
     setVariants(updated);
   };
 
-  // ================= CREATE PRODUCT =================
+  //  CREATE PRODUCT
   const handleSubmit = async () => {
     if (!title || variants.length === 0) {
       return alert("Fill required fields");
@@ -126,7 +125,7 @@ export default function AddProduct() {
   };
   return (
     <div className="space-y-6">
-      {/* ================= BASIC INFO ================= */}
+      {/*  BASIC INFO  */}
       <div className="bg-white p-4 rounded shadow space-y-3">
         <h2 className="font-semibold text-lg">Basic Info</h2>
 
@@ -160,7 +159,7 @@ export default function AddProduct() {
         </select>
       </div>
 
-      {/* ================= ATTRIBUTES ================= */}
+      {/*  ATTRIBUTES  */}
       <div className="bg-white p-4 rounded shadow space-y-3">
         <h2 className="font-semibold text-lg">Attributes</h2>
 
@@ -186,10 +185,10 @@ export default function AddProduct() {
         ))}
       </div>
 
-      {/* ================= GENERATE ================= */}
+      {/*  GENERATE  */}
       <Button onClick={generateVariants}>Generate Variants</Button>
 
-      {/* ================= VARIANTS ================= */}
+      {/*  VARIANTS  */}
       {variants.length > 0 && (
         <div className="bg-white p-4 rounded shadow space-y-3">
           <h2 className="font-semibold text-lg">Variants</h2>
@@ -230,7 +229,7 @@ export default function AddProduct() {
         </div>
       )}
 
-      {/* ================= CREATE BUTTON ================= */}
+      {/*  CREATE BUTTON  */}
       {variants.length > 0 && (
         <Button onClick={handleSubmit}>Create Product & Continue to Images →</Button>
       )}

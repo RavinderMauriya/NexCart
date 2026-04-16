@@ -8,17 +8,33 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
 
-  // CORE
+  //ui model state
+  const [isOpen, setIsOpen] = useState(false);
+  const [mode, setMode] = useState("login");
 
+  const openModal = (type = "login") => {
+    setMode(type);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  // CORE
   const saveToken = (newToken) => {
     setToken(newToken);
     localStorage.setItem("token", newToken);
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
+  const logout = async () => {
+    const res = await apiRequest("/auth/logout", "GET", null, token);
+    if(res.success){
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("token");
+      closeModal();
+    }
   };
 
   const fetchProfile = async (authToken) => {
@@ -106,159 +122,16 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         setUser,
+        
+        //ui model state
+        isOpen,
+        mode,
+        setMode,
+        openModal,
+        closeModal,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-
-
-
-// import { createContext, useState, useEffect } from "react";
-// import { apiRequest } from "../services/api";
-
-// export const AuthContext = createContext();
-
-// export const AuthProvider = ({ children }) => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [mode, setMode] = useState("login");
-
-//   const openModal = (type = "login") => {
-//     setMode(type);
-//     setIsOpen(true);
-//   };
-
-//   const closeModal = () => {
-//     setIsOpen(false);
-//   };
-
-//   // Auth state
-//   const [user, setUser] = useState(null);
-//   const [token, setToken] = useState(localStorage.getItem("token") || null);
-//   const [loading, setLoading] = useState(true);
-
-//   // Fetch user profile from backend
-//   const fetchUserProfile = async (authToken) => {
-//     try {
-//       const res = await apiRequest("/user/profile/me", "GET", null, authToken);
-//       if (res.success) {
-//         setUser(res.user);
-//         return true;
-//       } else {
-//         // Token invalid or user not found
-//         setToken(null);
-//         localStorage.removeItem("token");
-//         setUser(null);
-//         return false;
-//       }
-//     } catch (error) {
-//       console.error("Error fetching user profile:", error);
-//       setToken(null);
-//       localStorage.removeItem("token");
-//       setUser(null);
-//       return false;
-//     }
-//   };
-
-//   // Check if user is authenticated on mount and token changes
-//   useEffect(() => {
-//     const initializeAuth = async () => {
-//       if (token) {
-//         await fetchUserProfile(token);
-//       }
-//       setLoading(false);
-//     };
-
-//     initializeAuth();
-
-//     // Listen for unauthorized events from API interceptors
-//     const handleUnauthorized = () => {
-//       setToken(null);
-//       localStorage.removeItem("token");
-//       setUser(null);
-//     };
-
-//     window.addEventListener("auth_unauthorized", handleUnauthorized);
-
-//     return () => {
-//       window.removeEventListener("auth_unauthorized", handleUnauthorized);
-//     };
-//   }, [token]);
-
-//   const loginHandler = async (data) => {
-//     try {
-//       setLoading(true);
-//       const res = await apiRequest("/auth/login", "POST", data);
-
-//       if (res.success) {
-//         // Store token
-//         const newToken = res.accessToken;
-//         setToken(newToken);
-//         localStorage.setItem("token", newToken);
-
-//         // Backend middleware handle karega role validation
-//         // Frontend sirf user data fetch karega
-//         await fetchUserProfile(newToken);
-//         closeModal();
-//       } else {
-//         throw new Error(res.message || "Login failed");
-//       }
-//     } catch (error) {
-//       console.error("Login error:", error);
-//       throw error; // Caller ko error pass karo for UI feedback
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const registerHandler = async (data) => {
-//     try {
-//       const res = await apiRequest("/auth/register", "POST", data);
-//       if (!res.success) {
-//         throw new Error(res.message || "Registration failed");
-//       }
-//       return res;
-//     } catch (error) {
-//       console.error("Registration error:", error);
-//       throw error; // Caller ko error pass karo for UI feedback
-//     }
-//   };
-
-//   const logoutHandler = async () => {
-//     try {
-//       // Optional: notify backend about logout
-//       await apiRequest("/auth/logout", "GET", null, token);
-//     } catch (error) {
-//       console.error("Logout error:", error);
-//     } finally {
-//       // Always clear frontend state
-//       setToken(null);
-//       localStorage.removeItem("token");
-//       setUser(null);
-//       closeModal();
-//     }
-//   };
-
-//   return (
-//     <AuthContext.Provider
-//       value={{
-//         isOpen,
-//         mode,
-//         setMode,
-//         openModal,
-//         closeModal,
-//         loginHandler,
-//         registerHandler,
-//         logoutHandler,
-//         user,
-//         setUser,
-//         token,
-//         loading,
-//       }}
-//     >
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };

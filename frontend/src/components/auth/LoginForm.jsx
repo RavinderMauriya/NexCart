@@ -5,17 +5,17 @@ import { AuthContext } from "../../context/authContext";
 export default function LoginForm() {
   const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const { loginHandler, closeModal } = useContext(AuthContext)
+  const { login, closeModal } = useContext(AuthContext)
 
   //api call
-  const login = async (e)=>{
+  const loginHandler = async (e)=>{
     e.preventDefault();
-    await loginHandler(data);
+    await login(data); //login function from authContext
     closeModal();
   }
 
   return (
-    <form className="space-y-3" onSubmit={login}>
+    <form className="space-y-3" onSubmit={loginHandler}>
       <input
         type="email"
         placeholder="Email"

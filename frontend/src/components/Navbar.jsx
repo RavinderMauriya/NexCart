@@ -5,8 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 
 const Navbar = () => {
-  const user = false;
-  const { openModal } = useContext(AuthContext);
+  const { openModal, user } = useContext(AuthContext);
   return (
     <header className="sticky top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-black/5 shadow-[0_12px_40px_rgba(25,28,30,0.06)]">
       {/* Top Bar */}

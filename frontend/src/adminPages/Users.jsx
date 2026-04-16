@@ -11,7 +11,7 @@ export default function Users() {
 
   // ================= FETCH =================
   const fetchUsers = async () => {
-    const res = await apiRequest("/user", "GET", null, token);
+    const res = await apiRequest("/user/profile/all", "GET", null, token);
     if (res.success) {
       setUsers(res.users || res.data || []);
     }
@@ -23,7 +23,7 @@ export default function Users() {
 
   // ================= BLOCK =================
   const toggleBlock = async (id) => {
-    const res = await apiRequest(`/user/block/${id}`, "PUT", null, token);
+    const res = await apiRequest(`/user/profile/block/${id}`, "PUT", null, token);
 
     if (res.success) {
       fetchUsers();

@@ -1,27 +1,18 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 
 const ProtectedRoute = ({ children, role }) => {
-  const { user, token, loading, openModal } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user, loading, openModal } = useContext(AuthContext);
 
   useEffect(() => {
-    // Agar loading khatam ho gaya aur koi token nahi hai
-    if (!loading && !token) {
-      navigate("/");
+    if (!loading && !user) {
       openModal("login");
     }
+  }, [loading, user, openModal]);
 
-    // Agar specific role chahiye aur user ka role match nahi hota
-    if (!loading && token && role && user?.role !== role) {
-      navigate("/");
-    }
-  }, [token, loading, user, role, navigate, openModal]);
-
-
+  // Wait for auth check
   if (loading) {
-    console.log("loading run...")
     return (
       <div className="h-screen flex justify-center items-center text-xl font-bold">
         Loading...
@@ -29,12 +20,59 @@ const ProtectedRoute = ({ children, role }) => {
     );
   }
 
-  // Step 2: Token hai aur role sahi hai (ya role check nahi hai)
-  if (token && (!role || user?.role === role)) {
-    return children;
+  // Not logged in
+  if (!user) {
+    return <Navigate to="/" replace />;
   }
 
-  return null;
+  // Role check (for admin etc.)
+  if (role && user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Allowed
+  return children;
 };
 
 export default ProtectedRoute;
+
+
+
+// import { useNavigate } from "react-router-dom";
+// import { AuthContext } from "../../context/authContext";
+
+// const ProtectedRoute = ({ children, role }) => {
+//   const { user, token, loading, openModal } = useContext(AuthContext);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     if (!loading && !token) {
+//       navigate("/");
+//       openModal("login");
+//     }
+
+//     if (!loading && token && role && user?.role !== role) {
+//       navigate("/");
+//     }
+//   }, [token, loading, user, role, navigate, openModal]);
+
+
+//   if (loading) {
+//     console.log("loading run...")
+//     return (
+//       <div className="h-screen flex justify-center items-center text-xl font-bold">
+//         Loading...
+//       </div>
+//     );
+//   }
+
+//   if (token && (!role || user?.role === role)) {
+//     return children;
+//   }
+
+//   return null;
+// };
+
+// export default ProtectedRoute;
+
+

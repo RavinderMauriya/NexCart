@@ -79,6 +79,7 @@ export default function Products() {
                   </Button>
 
                   <Button onClick={() => handleDelete(p._id)}>Delete</Button>
+
                 </td>
               </tr>
 
