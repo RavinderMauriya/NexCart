@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_BASE = "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const apiClient = axios.create({
   baseURL: API_BASE,
@@ -12,7 +12,7 @@ export const apiRequest = async (
   url,
   method = "GET",
   data = null,
-  token = null
+  token = null,
 ) => {
   try {
     const res = await apiClient({
@@ -25,9 +25,12 @@ export const apiRequest = async (
     });
 
     return res.data;
-  }catch (error) {
+  } catch (error) {
     if (error.response) {
-      console.log(`[API Request Responded with Error] ${method} ${url}:`, error.response.data); //for console
+      console.log(
+        `[API Request Responded with Error] ${method} ${url}:`,
+        error.response.data,
+      ); //for console
       return error.response.data;
     }
     console.log(`[API Request Failed] ${method} ${url}:`, error.message); //for console

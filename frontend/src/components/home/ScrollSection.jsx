@@ -46,7 +46,7 @@ const ScrollSection = () => {
         </div>
 
         {/* Cards */}
-        <div className="flex gap-4 md:justify-center overflow-x-auto scrollbar-hide">
+        <div className="flex gap-4 md:justify-center overflow-x-auto hide-scrollbar">
 
           {products.map((item) => (
             <div

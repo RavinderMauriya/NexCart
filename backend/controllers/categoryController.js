@@ -84,3 +84,10 @@ export const deleteCategory = asyncHandler(async (req, res) => {
     await Category.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "category deleted" })
 })
+
+
+//get root category (no parent)
+export const getRootCategories = asyncHandler(async (req, res) => {
+    const rootCategories = await Category.find({ parent: null });
+    res.status(200).json({ success: true, message: "fetch successfully", data: rootCategories })
+})

@@ -15,10 +15,10 @@ const ProductCard = ({ id, title, price, oldPrice, brand, rating, image }) => {
             </div>
 
             <div className="flex gap-2 items-center mt-2">
-                <span className="font-bold">${price}</span>
+                <span className="font-bold">₹{price}</span>
                 {oldPrice && (
                     <span className="line-through text-text-muted text-sm">
-                        ${oldPrice}
+                        ₹{oldPrice}
                     </span>
                 )}
             </div>

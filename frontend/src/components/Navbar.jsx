@@ -1,23 +1,43 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Search, ShoppingCart, User, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../services/api";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { openModal, user } = useContext(AuthContext);
+  const [categories, setCategories] = useState([]);
+
+  // fetch root categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await apiRequest("/category/root");
+        if (res.success) setCategories(res.data);
+        console.log(res.data)
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <header className="sticky top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-black/5 shadow-[0_12px_40px_rgba(25,28,30,0.06)]">
+      
       {/* Top Bar */}
       <div className="flex items-center justify-between px-4 md:px-6 py-3 max-w-[1400px] mx-auto">
-        {/* Left */}
-        <div className="flex items-center gap-3">
-          {/* Logo */}
-          <div className="text-xl md:text-2xl font-black tracking-tighter text-primary">
-            NexCart
-          </div>
+        
+        {/* Logo */}
+        <div
+          onClick={() => navigate("/")}
+          className="text-xl md:text-2xl font-black tracking-tighter text-primary cursor-pointer"
+        >
+          NexCart
         </div>
 
         {/* Search */}
@@ -50,48 +70,69 @@ const Navbar = () => {
             <span className="hidden lg:block text-sm ml-1">Cart</span>
           </Link>
 
-          {/* // btn for adminDashboard */}
-          {user?.role === 'admin' && <div onClick={()=>navigate("/admin/dashboard")} className="bg-secondary px-3 md:px-5 py-2 rounded-xl font-semibold cursor-pointer">Dashboard</div>}
-
-          {/* //dynamic btn for login and profile */}
-          {user ? (
-            <Link to="/profile" className="hidden md:flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2 rounded-xl font-semibold">
-              <User />
-              <span className="hidden md:block">Profile</span>
-            </Link>
-          ) : (
-            <button onClick={() => openModal("login")} className="hidden md:flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2 rounded-xl font-semibold">
-              <User />
-              <span className="hidden md:block">Login</span>
-            </button>
+          {user?.role === "admin" && (
+            <div
+              onClick={() => navigate("/admin/dashboard")}
+              className="bg-secondary px-3 md:px-5 py-2 rounded-xl font-semibold cursor-pointer"
+            >
+              Dashboard
+            </div>
           )}
 
+          {user ? (
+            <Link
+              to="/profile"
+              className="hidden md:flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2 rounded-xl font-semibold"
+            >
+              <User />
+              <span>Profile</span>
+            </Link>
+          ) : (
+            <button
+              onClick={() => openModal("login")}
+              className="hidden md:flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2 rounded-xl font-semibold"
+            >
+              <User />
+              <span>Login</span>
+            </button>
+          )}
         </div>
       </div>
 
-      <nav className=" bg-white/50 border-t border-border">
+      {/*Category Nav */}
+      <nav className="bg-white/50 border-t border-border">
         <div className="max-w-[1400px] mx-auto flex items-center gap-9 px-6 py-2 overflow-x-auto hide-scrollbar">
+
+          {/* All Products */}
           <Link
-            to="/"
-            className="text-primary font-semibold border-b-2 border-primary text-sm py-1"
+            to="/products"
+            className={`text-sm py-1 ${
+              location.search === ""
+                ? "text-primary font-semibold border-b-2 border-primary"
+                : "text-text-dark hover:text-primary"
+            }`}
           >
-            Electronics
+            All
           </Link>
-          <Link to="/" className="text-text-dark hover:text-primary text-sm">
-            Fashion
-          </Link>
-          <Link to="/" className="text-text-dark hover:text-primary text-sm">
-            Home
-          </Link>
-          <Link to="/" className="text-text-dark hover:text-primary text-sm">
-            Beauty
-          </Link>
-          <Link to="/" className="text-text-dark hover:text-primary text-sm">
-            Sports
-          </Link>
-          <Link to="/" className="text-text-dark hover:text-primary text-sm">
-            Deals
-          </Link>
+
+          {/* Dynamic Categories */}
+          {categories.map((cat) => {
+            const isActive = location.search.includes(cat._id);
+
+            return (
+              <Link
+                key={cat._id}
+                to={`/products?category=${cat._id}`}
+                className={`text-sm py-1 ${
+                  isActive
+                    ? "text-primary font-semibold border-b-2 border-primary"
+                    : "text-text-dark hover:text-primary"
+                }`}
+              >
+                {cat.name}
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </header>

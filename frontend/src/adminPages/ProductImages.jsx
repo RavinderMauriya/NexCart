@@ -2,7 +2,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
-import { apiRequest, API_BASE } from "../services/api";
+import { apiRequest } from "../services/api";
 
 export default function ProductImages() {
   const { token } = useContext(AuthContext);
@@ -36,15 +36,7 @@ export default function ProductImages() {
       formData.append("images", file);
     }
 
-    const res = await fetch(`${API_BASE}/products/upload`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
-
-    const data = await res.json();
+    const data = await apiRequest("/products/upload", "POST", formData, token);
 
     if (data.success) {
       fetchProduct(); // refresh to show images

@@ -8,7 +8,6 @@ import cartRoute from './routes/cartRoute.js'
 import orderRoute from './routes/orderRoute.js'
 import reviewRoute from './routes/reviewRoute.js'
 import userRoute from './routes/userRoute.js'
-import authMiddleware from './middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
@@ -37,7 +36,7 @@ app.get("/", (req, res) => {
 })
 app.use("/api/auth", authRoute);
 app.use("/api/products", productRouter);
-app.use("/api/category", authMiddleware("admin"), productCategory);
+app.use("/api/category", productCategory);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);

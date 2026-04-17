@@ -110,7 +110,7 @@ export default function Orders() {
                       className="flex gap-4 border rounded-xl p-3 hover:shadow-sm transition"
                     >
                       {/* IMAGE */}
-                      <div className="w-20 h-20 flex-shrink-0">
+                      <div className="w-20 h-20 shrink-0">
                         <img
                           src={item.variant?.images?.[0]}
                           alt={item.title}
