@@ -12,8 +12,8 @@ export default function Topbar()  {
   };
   return (
     <div className="bg-bg-card border-b p-4 flex justify-between">
-      <h2 className="font-semibold">Admin Panel</h2>
-      <button onClick={logoutHandler} className="bg-secondary font-bold px-4 py-2 rounded-xl">
+      <h2 className="font-bold">Admin Panel</h2>
+      <button onClick={logoutHandler} className= "text-danger font-bold px-4 py-2 rounded-xl">
         Logout
       </button>
     </div>

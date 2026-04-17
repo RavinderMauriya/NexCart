@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import Cart from "../models/cartModel.js";
 import Product from "../models/productSchema.js";
 import User from "../models/userSchema.js";
+import Order from "../models/orderSchema.js";
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
 
@@ -26,7 +27,7 @@ export const createOrder = asyncHandler(async (req, res) => {
         return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const address = user.addresses.id(addressId);
+    const address = user.address.id(addressId);
     if (!address) {
         return res.status(404).json({ success: false, message: "Address not found" });
     }
@@ -87,10 +88,22 @@ export const createOrder = asyncHandler(async (req, res) => {
 
     // COD FLOW
     if (paymentMethod === "COD") {
-        // OPTIONAL: reduce stock + clear cart here
+        // REDUCE STOCK
+        for (const item of orderItems) {
+            const product = await Product.findById(item.productId);
+            const variant = product.variants.id(item.variant._id);
+            if (variant) {
+                variant.stock -= item.quantity;
+                await product.save();
+            }
+        }
+
+        // CLEAR CART
+        await Cart.findOneAndDelete({ user: userId });
 
         return res.status(201).json({
             success: true,
+            message: "Order placed successfully (COD)",
             data: {
                 type: "COD",
                 orderId: order._id,
@@ -119,7 +132,6 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 //VERIFY PAYMENT
 import crypto from "crypto";
-import Order from "../models/orderSchema.js";
 
 export const verifyPayment = asyncHandler(async (req, res) => {
     const {
@@ -241,15 +253,32 @@ export const cancelOrder = asyncHandler(async (req, res) => {
 
     const order = await Order.findOne({
         _id: orderId,
-        user: req.user.id,
+        user: req.userId,
     });
 
     if (!order) {
         return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    order.status = "cancelled";
+    if (order.status === "cancelled") {
+        return res.status(400).json({ success: false, message: "Order already cancelled" });
+    }
 
+    // Restore stock if the order was confirmed/paid
+    if (order.status === "confirmed" || order.paymentMethod === "COD") {
+        for (const item of order.items) {
+            const product = await Product.findById(item.productId);
+            if (product) {
+                const variant = product.variants.id(item.variant._id);
+                if (variant) {
+                    variant.stock += item.quantity;
+                    await product.save();
+                }
+            }
+        }
+    }
+
+    order.status = "cancelled";
     await order.save();
 
     res.status(200).json({
@@ -286,7 +315,7 @@ export const returnOrder = asyncHandler(async (req, res) => {
         });
     }
 
-    // 🔴 BUSINESS RULE: only delivered orders can be returned
+    //only delivered orders can be returned
     if (order.status !== "delivered") {
         return res.status(400).json({
             success: false,

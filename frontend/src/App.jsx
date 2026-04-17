@@ -12,6 +12,7 @@ import Order from "./components/profile/Order";
 import ProfileDetails from "./components/profile/profileDetails";
 import Address from "./components/profile/Address";
 import { OrderProvider } from "./context/orderContext";
+
 //auth and admin routes
 import { AuthProvider } from "./context/authContext";
 import AuthModal from "./components/auth/AuthModal";
@@ -21,7 +22,6 @@ import AdminProducts from "./adminPages/Product";
 import AdminCategories from "./adminPages/Categories";
 import AdminOrders from "./adminPages/Orders";
 import AdminUsers from "./adminPages/Users";
-import AdminCoupons from "./adminPages/Coupons";
 import AdminProductImages from "./adminPages/ProductImages";
 import AdminAddProduct from "./adminPages/AddProduct";
 import AdminLayout from "./components/adminDashboard/AdminLayout";
@@ -44,7 +44,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            {/* user routes */}
+            {/* user nested routes */}
             <Route
               path="/profile"
               element={
@@ -55,10 +55,10 @@ const App = () => {
             >
               <Route index element={<ProfileDetails />} />
               <Route path="orders" element={<Order />} />
-              <Route path="addresses" element={<Address />} />
+              <Route path="address" element={<Address />} />
             </Route>
 
-            {/* admin routes */}
+            {/* admin nested routes */}
             <Route
               path="/admin"
               element={
@@ -77,7 +77,6 @@ const App = () => {
               />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="users" element={<AdminUsers />} />
-              <Route path="coupons" element={<AdminCoupons />} />
             </Route>
           </Routes>
           <Footer />

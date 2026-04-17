@@ -1,5 +1,129 @@
-import React, { Fragment } from "react";
-import { useEffect, useState, useContext } from "react";
+// import React, { Fragment } from "react";
+// import { useEffect, useState, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { AuthContext } from "../context/authContext";
+// import { apiRequest } from "../services/api";
+// import Button from "../components/adminDashboard/Button";
+
+// export default function Products() {
+//   const navigate = useNavigate();
+//   const { token } = useContext(AuthContext);
+
+//   const [products, setProducts] = useState([]);
+//   const [openIndex, setOpenIndex] = useState(null);
+
+//   // ================= FETCH =================
+//   const fetchProducts = async () => {
+//     const res = await apiRequest("/products", "GET", null, token);
+//     if (res.success) {
+//       setProducts(res.data.products || res.products || []);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchProducts();
+//   }, []);
+
+//   // ================= DELETE =================
+//   const handleDelete = async (id) => {
+//     const confirm = window.confirm("Delete product?");
+//     if (!confirm) return;
+
+//     const res = await apiRequest(`/products/${id}`, "DELETE", null, token);
+
+//     if (res.success) {
+//       fetchProducts();
+//     }
+//   };
+
+//   // ================= PRICE RANGE =================
+//   const getPriceRange = (variants) => {
+//     const prices = variants.map((v) => Number(v.price || 0));
+//     return `${Math.min(...prices)} - ${Math.max(...prices)}`;
+//   };
+
+//   return (
+//     <div className="space-y-4">
+//       <h1 className="text-xl font-bold">Products</h1>
+
+//       <Button onClick={() => navigate("/admin/products/add")}>
+//         + Add Product
+//       </Button>
+
+//       <table className="w-full border">
+//         <thead>
+//           <tr className="bg-gray-100">
+//             <th className="p-2 border">Title</th>
+//             <th className="p-2 border">Brand</th>
+//             <th className="p-2 border">Price Range</th>
+//             <th className="p-2 border">Actions</th>
+//           </tr>
+//         </thead>
+
+//         <tbody>
+//           {products.map((p, i) => (
+//             <Fragment key={p._id}>
+//               {/* PRODUCT ROW */}
+//               <tr>
+//                 <td className="p-2 border">{p.title}</td>
+//                 <td className="p-2 border">{p.brand}</td>
+//                 <td className="p-2 border">
+//                   {getPriceRange(p.variants || [])}
+//                 </td>
+
+//                 <td className="p-2 border space-x-2">
+//                   <Button
+//                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
+//                   >
+//                     {openIndex === i ? "Hide" : "View"}
+//                   </Button>
+
+//                   <Button onClick={() => handleDelete(p._id)}>Delete</Button>
+
+//                 </td>
+//               </tr>
+
+//               {/* VARIANTS ROW */}
+//               {openIndex === i && (
+//                 <tr>
+//                   <td colSpan="4" className="p-3 border bg-gray-50">
+//                     <div className="grid md:grid-cols-3 gap-3">
+//                       {p.variants.map((v, idx) => (
+//                         <div key={idx} className="border p-2 rounded">
+//                           <div className="text-sm mb-1">
+//                             {Object.values(v.attributes).join(" - ")}
+//                           </div>
+
+//                           <div className="text-sm">Price: {v.price}</div>
+
+//                           <div className="text-sm">Stock: {v.stock}</div>
+
+//                           <div className="text-sm">
+//                             Images: {v.images?.length || 0}
+//                           </div>
+
+//                           {/* preview first image */}
+//                           {v.images?.[0] && (
+//                             <img
+//                               src={v.images[0]}
+//                               className="w-16 h-16 object-cover mt-2"
+//                             />
+//                           )}
+//                         </div>
+//                       ))}
+//                     </div>
+//                   </td>
+//                 </tr>
+//               )}
+//             </Fragment>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// }
+
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
@@ -11,13 +135,16 @@ export default function Products() {
 
   const [products, setProducts] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // ================= FETCH =================
   const fetchProducts = async () => {
+    setLoading(true);
     const res = await apiRequest("/products", "GET", null, token);
     if (res.success) {
       setProducts(res.data.products || res.products || []);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -26,99 +153,116 @@ export default function Products() {
 
   // ================= DELETE =================
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Delete product?");
+    const confirm = window.confirm("Delete this product permanently?");
     if (!confirm) return;
 
     const res = await apiRequest(`/products/${id}`, "DELETE", null, token);
-
-    if (res.success) {
-      fetchProducts();
-    }
-  };
-
-  // ================= PRICE RANGE =================
-  const getPriceRange = (variants) => {
-    const prices = variants.map((v) => Number(v.price || 0));
-    return `${Math.min(...prices)} - ${Math.max(...prices)}`;
+    if (res.success) fetchProducts();
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-bold">Products</h1>
+    <div className="space-y-6">
+      {/* HEADER */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold">Products</h1>
 
-      <Button onClick={() => navigate("/admin/products/add")}>
-        + Add Product
-      </Button>
+        <Button onClick={() => navigate("/admin/products/add")}>
+          + Add Product
+        </Button>
+      </div>
 
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Title</th>
-            <th className="p-2 border">Brand</th>
-            <th className="p-2 border">Price Range</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
+      {/* LOADING */}
+      {loading && (
+        <div className="text-center py-10 text-gray-500">Loading products...</div>
+      )}
 
-        <tbody>
-          {products.map((p, i) => (
-            <Fragment key={p._id}>
-              {/* PRODUCT ROW */}
-              <tr>
-                <td className="p-2 border">{p.title}</td>
-                <td className="p-2 border">{p.brand}</td>
-                <td className="p-2 border">
-                  {getPriceRange(p.variants || [])}
-                </td>
+      {/* EMPTY */}
+      {!loading && products.length === 0 && (
+        <div className="text-center py-10 text-gray-400">
+          No products found
+        </div>
+      )}
 
-                <td className="p-2 border space-x-2">
-                  <Button
-                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
+      {/* LIST */}
+      <div className="space-y-4">
+        {products.map((p, i) => (
+          <div
+            key={p._id}
+            className="border rounded-xl p-4 shadow-sm bg-white"
+          >
+            {/* TOP */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-semibold">{p.title}</h2>
+                <p className="text-sm text-gray-500">{p.brand}</p>
+
+                {/* PRICE (use DB fields, not calc) */}
+                <p className="text-sm mt-1">
+                  ₹{p.minPrice} - ₹{p.maxPrice}
+                </p>
+              </div>
+
+              {/* ACTIONS */}
+              <div className="flex gap-2">
+                <Button
+                  onClick={() =>
+                    setOpenIndex(openIndex === i ? null : i)
+                  }
+                >
+                  {openIndex === i ? "Hide" : "View"}
+                </Button>
+
+                <Button
+                  onClick={() => handleDelete(p._id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+
+            {/* VARIANTS */}
+            {openIndex === i && (
+              <div className="mt-4 grid md:grid-cols-3 gap-4">
+                {p.variants.map((v, idx) => (
+                  <div
+                    key={idx}
+                    className="border rounded-lg p-3 bg-gray-50"
                   >
-                    {openIndex === i ? "Hide" : "View"}
-                  </Button>
+                    {/* IMAGE */}
+                    {v.images?.[0] ? (
+                      <img
+                        src={v.images[0]}
+                        className="w-full h-32 object-cover rounded mb-2"
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-gray-200 rounded mb-2 flex items-center justify-center text-xs text-gray-500">
+                        No Image
+                      </div>
+                    )}
 
-                  <Button onClick={() => handleDelete(p._id)}>Delete</Button>
-
-                </td>
-              </tr>
-
-              {/* VARIANTS ROW */}
-              {openIndex === i && (
-                <tr>
-                  <td colSpan="4" className="p-3 border bg-gray-50">
-                    <div className="grid md:grid-cols-3 gap-3">
-                      {p.variants.map((v, idx) => (
-                        <div key={idx} className="border p-2 rounded">
-                          <div className="text-sm mb-1">
-                            {Object.values(v.attributes).join(" - ")}
-                          </div>
-
-                          <div className="text-sm">Price: {v.price}</div>
-
-                          <div className="text-sm">Stock: {v.stock}</div>
-
-                          <div className="text-sm">
-                            Images: {v.images?.length || 0}
-                          </div>
-
-                          {/* preview first image */}
-                          {v.images?.[0] && (
-                            <img
-                              src={v.images[0]}
-                              className="w-16 h-16 object-cover mt-2"
-                            />
-                          )}
-                        </div>
-                      ))}
+                    {/* ATTRIBUTES */}
+                    <div className="text-sm font-medium mb-1">
+                      {Object.values(v.attributes).join(" / ")}
                     </div>
-                  </td>
-                </tr>
-              )}
-            </Fragment>
-          ))}
-        </tbody>
-      </table>
+
+                    <div className="text-sm text-gray-600">
+                      ₹{v.price}
+                    </div>
+
+                    <div className="text-sm text-gray-500">
+                      Stock: {v.stock}
+                    </div>
+
+                    <div className="text-xs text-gray-400 mt-1">
+                      {v.images?.length || 0} images
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

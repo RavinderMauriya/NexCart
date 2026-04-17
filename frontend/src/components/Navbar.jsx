@@ -3,8 +3,10 @@ import { Search, ShoppingCart, User, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { openModal, user } = useContext(AuthContext);
   return (
     <header className="sticky top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-black/5 shadow-[0_12px_40px_rgba(25,28,30,0.06)]">
@@ -47,6 +49,9 @@ const Navbar = () => {
             <ShoppingCart />
             <span className="hidden lg:block text-sm ml-1">Cart</span>
           </Link>
+
+          {/* // btn for adminDashboard */}
+          {user?.role === 'admin' && <div onClick={()=>navigate("/admin/dashboard")} className="bg-secondary px-3 md:px-5 py-2 rounded-xl font-semibold cursor-pointer">Dashboard</div>}
 
           {/* //dynamic btn for login and profile */}
           {user ? (

@@ -11,7 +11,6 @@ export default function Sidebar() {
         <Link className='hover:bg-gray-200 p-2 rounded' to="/admin/products">Products</Link>
         <Link className='hover:bg-gray-200 p-2 rounded' to="/admin/orders">Orders</Link>
         <Link className='hover:bg-gray-200 p-2 rounded' to="/admin/users">Users</Link>
-        <Link className='hover:bg-gray-200 p-2 rounded' to="/admin/coupons">Coupons</Link>
       </nav>
     </div>
   );

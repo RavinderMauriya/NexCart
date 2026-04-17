@@ -1,20 +1,26 @@
-
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
-import Button from "../components/adminDashboard/Button";
+
+const statusStyles = {
+  pending: "bg-yellow-100 text-yellow-700",
+  confirmed: "bg-blue-100 text-blue-700",
+  shipped: "bg-purple-100 text-purple-700",
+  delivered: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+  returned: "bg-gray-200 text-gray-700",
+};
 
 export default function Orders() {
   const { token } = useContext(AuthContext);
 
   const [orders, setOrders] = useState([]);
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openOrderId, setOpenOrderId] = useState(null);
 
-  // ================= FETCH =================
   const fetchOrders = async () => {
     const res = await apiRequest("/orders", "GET", null, token);
     if (res.success) {
-      setOrders(res.data || res.orders || []);
+      setOrders(res.data || []);
     }
   };
 
@@ -22,131 +28,184 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
-  // ================= UPDATE STATUS =================
   const updateStatus = async (id, status) => {
     const res = await apiRequest(
       `/orders/${id}/status`,
       "PUT",
       { status },
-      token
+      token,
     );
 
-    if (res.success) {
-      fetchOrders();
-    }
+    if (res.success) fetchOrders();
   };
 
   return (
     <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Orders</h1>
 
-      <h1 className="text-xl font-bold">Orders</h1>
+      {orders.map((o, i) => (
+        <div key={o._id} className="bg-bg-card border rounded-xl shadow-sm p-4">
+          {/* TOP SECTION */}
+          <div className="flex justify-between items-center flex-wrap gap-3">
+            <div>
+              <div className="font-semibold text-sm text-text-light">
+                Order ID
+              </div>
+              <div className="font-medium">{o._id}</div>
+            </div>
 
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Order ID</th>
-            <th className="p-2 border">Amount</th>
-            <th className="p-2 border">Payment</th>
-            <th className="p-2 border">Status</th>
-            <th className="p-2 border">Action</th>
-          </tr>
-        </thead>
+            <div>
+              <div className="text-sm text-text-light">Amount</div>
+              <div className="font-semibold">₹{o.totalAmount}</div>
+            </div>
 
-        <tbody>
-          {orders.map((o, i) => (
-            <React.Fragment key={o._id}>
+            <div>
+              <div className="text-sm text-text-light">Payment</div>
+              <div className="font-medium">{o.paymentStatus}</div>
+            </div>
 
-              {/* ORDER ROW */}
-              <tr>
-                <td className="p-2 border">{o._id}</td>
-                <td className="p-2 border">₹{o.totalAmount}</td>
-                <td className="p-2 border">{o.paymentStatus}</td>
-                <td className="p-2 border">{o.status}</td>
+            {/* STATUS BADGE */}
+            <div
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                statusStyles[o.status]
+              }`}
+            >
+              {o.status}
+            </div>
 
-                <td className="p-2 border space-x-2">
-                  <Button onClick={() => setOpenIndex(openIndex === i ? null : i)}>
-                    {openIndex === i ? "Hide" : "View"}
-                  </Button>
-                </td>
-              </tr>
+            {/* STATUS UPDATE */}
+            <select
+              className="border p-2 rounded bg-bg-card"
+              value={o.status}
+              onChange={(e) => updateStatus(o._id, e.target.value)}
+            >
+              <option value="pending">pending</option>
+              <option value="confirmed">confirmed</option>
+              <option value="shipped">shipped</option>
+              <option value="delivered">delivered</option>
+              <option value="cancelled">cancelled</option>
+              <option value="returned">returned</option>
+            </select>
 
-              {/* DETAILS */}
-              {openIndex === i && (
-                <tr>
-                  <td colSpan="5" className="p-3 border bg-gray-50">
+            <button
+              onClick={() =>
+                setOpenOrderId(openOrderId === o._id ? null : o._id)
+              }
+              className="text-primary text-sm"
+            >
+              {openOrderId === o._id ? "Hide" : "View Details"}
+            </button>
+          </div>
 
-                    {/* ITEMS */}
-                    <div className="mb-4">
-                      <h3 className="font-semibold mb-2">Items</h3>
+          {/* EXPANDED */}
+          {openOrderId === o._id && (
+            <div className="mt-4 border-t pt-4 space-y-4">
+              {/* ITEMS */}
+              <div>
+                <h3 className="font-semibold mb-2">Items</h3>
+                <div className="grid gap-3">
+                  {o.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex gap-4 border rounded-xl p-3 hover:shadow-sm transition"
+                    >
+                      {/* IMAGE */}
+                      <div className="w-20 h-20 flex-shrink-0">
+                        <img
+                          src={item.variant?.images?.[0]}
+                          alt={item.title}
+                          className="w-full h-full object-cover rounded-lg border"
+                        />
+                      </div>
 
-                      <div className="grid md:grid-cols-3 gap-3">
-                        {o.items.map((item, idx) => (
-                          <div key={idx} className="border p-2 rounded">
+                      {/* CONTENT */}
+                      <div className="flex-1 space-y-1">
+                        {/* TITLE */}
+                        <div className="font-medium text-sm line-clamp-2">
+                          {item.title}
+                        </div>
 
-                            <div className="font-medium">
-                              {item.title}
-                            </div>
+                        {/* VARIANT CHIPS */}
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          {item.variant?.attributes &&
+                            Object.entries(item.variant.attributes).map(
+                              ([key, val]) => (
+                                <span
+                                  key={key}
+                                  className="px-2 py-0.5 bg-gray-100 border rounded-md text-text-dark"
+                                >
+                                  {val}
+                                </span>
+                              ),
+                            )}
+                        </div>
 
-                            <div className="text-sm">
-                              Qty: {item.quantity}
-                            </div>
-
-                            <div className="text-sm">
-                              Price: ₹{item.price}
-                            </div>
-
-                            <div className="text-sm">
-                              {Object.values(item.variant || {}).join(" - ")}
-                            </div>
-
+                        {/* SKU */}
+                        {item.variant?.sku && (
+                          <div className="text-xs text-text-muted">
+                            SKU: {item.variant.sku}
                           </div>
-                        ))}
+                        )}
+
+                        {/* PRICE */}
+                        <div className="flex items-center gap-2 text-sm">
+                          {/* original price */}
+                          {item.variant?.price &&
+                            item.variant.price > item.price && (
+                              <span className="line-through text-text-muted">
+                                ₹{item.variant.price}
+                              </span>
+                            )}
+
+                          {/* final price */}
+                          <span className="font-semibold text-text-dark">
+                            ₹{item.price}
+                          </span>
+
+                          {/* discount badge */}
+                          {item.variant?.price &&
+                            item.variant.price > item.price && (
+                              <span className="text-success text-xs font-medium">
+                                {Math.round(
+                                  ((item.variant.price - item.price) /
+                                    item.variant.price) *
+                                    100,
+                                )}
+                                % off
+                              </span>
+                            )}
+                        </div>
+
+                        {/* QUANTITY */}
+                        <div className="text-xs text-text-muted">
+                          Qty: {item.quantity}
+                        </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
 
-                    {/* ADDRESS */}
-                    <div className="mb-4">
-                      <h3 className="font-semibold mb-2">Address</h3>
-
-                      <div className="text-sm">
-                        {o.address?.fullName}
-                      </div>
-                      <div className="text-sm">
-                        {o.address?.addressLine}
-                      </div>
-                      <div className="text-sm">
-                        {o.address?.city}, {o.address?.state}
-                      </div>
-                      <div className="text-sm">
-                        {o.address?.pincode}
-                      </div>
-                    </div>
-
-                    {/* STATUS UPDATE */}
-                    <div className="flex gap-2 items-center">
-                      <select
-                        className="border p-2 rounded"
-                        value={o.status}
-                        onChange={(e) => updateStatus(o._id, e.target.value)}
-                      >
-                        <option value="pending">pending</option>
-                        <option value="confirmed">confirmed</option>
-                        <option value="shipped">shipped</option>
-                        <option value="delivered">delivered</option>
-                        <option value="cancelled">cancelled</option>
-                        <option value="returned">returned</option>
-                      </select>
-                    </div>
-
-                  </td>
-                </tr>
-              )}
-
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-
+              {/* ADDRESS */}
+              <div>
+                <h3 className="font-semibold mb-2">Address</h3>
+                <div className="text-sm text-text-dark">
+                  {o.address?.fullName}
+                </div>
+                <div className="text-sm text-text-muted">
+                  {o.address?.addressLine}
+                </div>
+                <div className="text-sm text-text-muted">
+                  {o.address?.city}, {o.address?.state}
+                </div>
+                <div className="text-sm text-text-muted">
+                  {o.address?.pincode}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

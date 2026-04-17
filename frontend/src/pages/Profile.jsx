@@ -39,21 +39,29 @@ const Profile = () => {
     return <p className="p-6 text-center">User not found. Please log in.</p>;
   }
 
-  return (
-    <div className="min-h-screen bg-surface px-4 md:px-6 py-10 bg-bg-main">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
-        {/* Sidebar */}
-        <div className="w-full lg:w-1/4">
-          <ProfileSidebar user={user} />
-        </div>
+ return (
+  <div className="min-h-screen bg-bg-main px-4 md:px-6 py-8">
+    <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
 
-        <div className="w-full lg:w-3/4">
+      {/* SIDEBAR */}
+      <aside className="w-full lg:w-1/4">
+        <div className="lg:sticky lg:top-6">
+          <div className="bg-white rounded-xl shadow-xl p-4">
+            <ProfileSidebar user={user} />
+          </div>
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="w-full lg:w-3/4">
+        <div className="bg-white rounded-xl shadow-xl p-4 md:p-6 min-h-[500px]">
           <Outlet />
         </div>
-        
-      </div>
+      </main>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default Profile;

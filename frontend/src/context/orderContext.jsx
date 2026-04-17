@@ -1,15 +1,16 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext,useState } from "react";
+import {AuthContext} from "../context/authContext"
 import { apiRequest } from "../services/api";
 
-const OrderContext = createContext();
+export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
+  const {token} = useContext(AuthContext)
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  
   // CREATE ORDER
-  const createOrder = async (orderData, token) => {
+  const createOrder = async (orderData) => {
     try {
       setLoading(true);
 
@@ -19,7 +20,6 @@ export const OrderProvider = ({ children }) => {
         return { success: true, data: res.data };
       }
 
-      return { success: false, message: res.message };
     } catch (error) {
       return {
         success: false,
@@ -34,7 +34,7 @@ export const OrderProvider = ({ children }) => {
   
   // GET MY ORDERS
   
-  const fetchMyOrders = async (token) => {
+  const fetchMyOrders = async () => {
     try {
       setLoading(true);
 
@@ -55,7 +55,7 @@ export const OrderProvider = ({ children }) => {
   
   // CANCEL ORDER
   
-  const cancelOrder = async (orderId, token) => {
+  const cancelOrder = async (orderId) => {
     try {
       setLoading(true);
 
@@ -90,7 +90,7 @@ export const OrderProvider = ({ children }) => {
   
   // RETURN ORDER
   
-  const returnOrder = async (orderId, token) => {
+  const returnOrder = async (orderId) => {
     try {
       setLoading(true);
 

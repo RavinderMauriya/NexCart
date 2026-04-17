@@ -55,6 +55,19 @@ export default function Categories() {
     const p = categories.find((c) => c._id.toString() === parent.toString());
 
     return p ? p.name : "-";
+
+  };
+
+  //delete category btn
+  const catDelete = async (id) => {
+    const ok = window.confirm("Are you sure you want to delete this category?");
+    if (!ok) return;
+
+    const res = await apiRequest(`/category/${id}`, "delete", null, token);
+
+    if (res.success) {
+      fetchCategories();
+    }
   };
 
   return (
@@ -94,6 +107,8 @@ export default function Categories() {
             <tr className="bg-gray-100">
               <th className="p-2 border">Name</th>
               <th className="p-2 border">Parent</th>
+              <th className="p-2 border">Action</th>
+              
             </tr>
           </thead>
 
@@ -102,6 +117,8 @@ export default function Categories() {
               <tr key={cat._id}>
                 <td className="p-2 border">{cat.name}</td>
                 <td className="p-2 border">{getParentName(cat.parent)}</td>
+                <td className="p-2 border"><button onClick={()=>catDelete(cat._id)}>Delete</button></td>
+                
               </tr>
             ))}
           </tbody>
