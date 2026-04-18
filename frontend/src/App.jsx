@@ -32,53 +32,55 @@ const App = () => {
       <AuthProvider>
         <OrderProvider>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<ProductPage />} />
-            <Route path="/products/:id" element={<ProductDetailPage />} />
-            <Route
-              path="/cart"
-              element={
-                <ProtectedRoute>
-                  <CartPage />
-                </ProtectedRoute>
-              }
-            />
-            {/* user nested routes */}
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<ProfileDetails />} />
-              <Route path="orders" element={<Order />} />
-              <Route path="address" element={<Address />} />
-            </Route>
-
-            {/* admin nested routes */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute role="admin">
-                  <AdminLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="products/add" element={<AdminAddProduct />} />
+          <main className="min-h-[calc(100vh-180px)] pb-16 md:pb-0">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<ProductPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route
-                path="products/:id/images"
-                element={<AdminProductImages />}
+                path="/cart"
+                element={
+                  <ProtectedRoute>
+                    <CartPage />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="users" element={<AdminUsers />} />
-            </Route>
-          </Routes>
+              {/* user nested routes */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<ProfileDetails />} />
+                <Route path="orders" element={<Order />} />
+                <Route path="address" element={<Address />} />
+              </Route>
+
+              {/* admin nested routes */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute role="admin">
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="products/add" element={<AdminAddProduct />} />
+                <Route
+                  path="products/:id/images"
+                  element={<AdminProductImages />}
+                />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="users" element={<AdminUsers />} />
+              </Route>
+            </Routes>
+          </main>
           <Footer />
 
           <MobileBottomNav />

@@ -102,9 +102,35 @@ export const getProductById = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         success: true,
-        product
+        data: product
     })
 })
+
+//get product by product id and variant id (for product details page)
+export const getProductVariantById = asyncHandler(async (req, res) => {
+    const { productId, variantId } = req.params;
+    const product = await Product.findById(productId).populate("category", "name");
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found"
+        });
+    }
+    const variant = product.variants.id(variantId);
+    if (!variant) {
+        return res.status(404).json({
+            success: false,
+            message: "Variant not found"
+        });
+    }
+    res.status(200).json({
+        success: true,
+        data: variant
+    });
+}
+);
+
+
 
 //create/add product
 export const addProduct = asyncHandler(async (req, res) => {

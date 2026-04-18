@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Search, ShoppingCart, User, MapPin } from "lucide-react";
+import { Search, ShoppingCart, User, MapPin, X } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
@@ -10,6 +10,8 @@ const Navbar = () => {
 
   const { openModal, user } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // fetch root categories
   useEffect(() => {
@@ -17,14 +19,39 @@ const Navbar = () => {
       try {
         const res = await apiRequest("/category/root");
         if (res.success) setCategories(res.data);
-        console.log(res.data)
       } catch (err) {
         console.error(err);
+      } finally {
+        setCategoriesLoading(false);
       }
     };
 
     fetchCategories();
   }, []);
+
+  // Sync search query from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchFromUrl = params.get("search") || "";
+    setSearchQuery(searchFromUrl);
+  }, [location.search]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    // If on products page with search, remove search param
+    const params = new URLSearchParams(location.search);
+    if (params.has("search")) {
+      params.delete("search");
+      navigate(`${location.pathname}?${params.toString()}`);
+    }
+  };
 
   return (
     <header className="sticky top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-black/5 shadow-[0_12px_40px_rgba(25,28,30,0.06)]">
@@ -41,16 +68,27 @@ const Navbar = () => {
         </div>
 
         {/* Search */}
-        <div className="flex flex-1 max-w-2xl mx-6 lg:mx-12">
+        <form onSubmit={handleSearch} className="flex flex-1 max-w-2xl mx-6 lg:mx-12">
           <div className="relative flex items-center bg-bg-main rounded-xl px-4 py-2 w-full focus-within:ring-2 focus-within:ring-primary/40">
-            <Search className="mr-2" />
+            <Search className="mr-2 text-text-muted" size={18} />
             <input
               className="bg-transparent w-full text-sm outline-none"
-              placeholder="Search..."
+              placeholder="Search products..."
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="ml-2 p-1 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X size={14} className="text-text-muted" />
+              </button>
+            )}
           </div>
-        </div>
+        </form>
 
         {/* Right */}
         <div className="flex items-center gap-4 md:gap-6">
@@ -115,8 +153,17 @@ const Navbar = () => {
             All
           </Link>
 
-          {/* Dynamic Categories */}
-          {categories.map((cat) => {
+          {/* Loading placeholder - prevents layout shift */}
+          {categoriesLoading && (
+            <>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-5 w-16 bg-gray-200 rounded animate-pulse"></div>
+              ))}
+            </>
+          )}
+
+          {/* Dynamic Categories loaded */}
+          {!categoriesLoading && categories.map((cat) => {
             const isActive = location.search.includes(cat._id);
 
             return (

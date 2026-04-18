@@ -16,7 +16,7 @@ const data = [
 const CircularIcons = () => {
 
     return (
-        <section className="px-4 max-w-7xl mx-auto md:px-6 lg:px-8 py-8">
+        <section className="px-4 max-w-7xl mx-auto md:px-6 lg:px-8 py-4">
 
             {/* header */}
             <div className="flex justify-between items-center mb-6">
@@ -37,12 +37,13 @@ const CircularIcons = () => {
                         className="flex flex-col items-center group cursor-pointer min-w-[100px] md:min-w-[140px] snap-start"
                     >
 
-                        {/* icon */}
+                        {/* icon - aspect-square prevents CLS */}
                         <div className="w-14 sm:w-16 md:w-28 aspect-square rounded-full md:rounded-xl overflow-hidden shadow-sm group-hover:shadow-md group-hover:scale-105 transition bg-bg-card border-border">
                             <img
                                 src={item.img}
                                 className="w-full h-full object-cover"
                                 alt={item.name}
+                                loading="lazy"
                             />
                         </div>
 

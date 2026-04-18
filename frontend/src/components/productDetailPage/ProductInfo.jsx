@@ -1,39 +1,88 @@
-const ProductInfo = ({ title, price, oldPrice, brand, rating }) => {
+const ProductInfo = ({
+  title,
+  description,
+  brand,
+  rating,
+  reviewCount,
+  variant,
+  attributes,
+  selectedAttrs,
+  onAttributeChange
+}) => {
+  const displayPrice = variant?.discountPrice || variant?.price;
+  const originalPrice = variant?.discountPrice ? variant?.price : null;
+  const inStock = variant?.stock > 0;
+
   return (
     <div className="bg-bg-card p-6 md:p-8 rounded-xl shadow space-y-6">
 
-      {/* Title */}
-      <h1 className="text-xl md:text-3xl font-bold">
-        {title}
-      </h1>
+      {/* Brand & Title */}
+      <div>
+        <p className="text-text-light text-sm uppercase tracking-wide">{brand}</p>
+        <h1 className="text-xl md:text-3xl font-bold mt-1">{title}</h1>
+      </div>
 
       {/* Rating */}
       <div className="flex items-center gap-2 text-yellow-500 text-sm">
-        {"★".repeat(rating)}
-        <span className="text-text-light text-xs">(1248 reviews)</span>
+        <span>{"★".repeat(Math.round(rating || 0))}</span>
+        <span className="text-text-light text-xs">({reviewCount || 0} reviews)</span>
       </div>
 
       {/* Price */}
       <div className="flex items-center gap-3">
-        <span className="text-2xl md:text-4xl font-bold">{price}</span>
-        <span className="line-through text-text-muted">{oldPrice}</span>
+        <span className="text-2xl md:text-4xl font-bold text-primary">₹{displayPrice}</span>
+        {originalPrice && (
+          <span className="line-through text-text-muted text-lg">₹{originalPrice}</span>
+        )}
       </div>
 
-      {/* Colors */}
-      <div>
-        <p className="font-semibold mb-2">Colors</p>
-        <div className="flex gap-2">
-          <div className="w-8 h-8 bg-black rounded-full border-2 border-primary" />
-          <div className="w-8 h-8 bg-gray-300 rounded-full" />
+      {/* Variant Selectors */}
+      {attributes?.map((attr) => (
+        <div key={attr.name} className="space-y-2">
+          <label className="text-sm font-medium text-text-dark">
+            {attr.name}: <span className="text-text-light">{selectedAttrs[attr.name]}</span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {attr.values.map((val) => (
+              <button
+                key={val}
+                onClick={() => onAttributeChange(attr.name, val)}
+                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all
+                  ${selectedAttrs[attr.name] === val
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border hover:border-primary/50"
+                  }`}
+              >
+                {val}
+              </button>
+            ))}
+          </div>
         </div>
+      ))}
+
+      {/* Stock Status */}
+      <div className="flex items-center gap-2 text-sm">
+        <span className={`w-2 h-2 rounded-full ${inStock ? "bg-green-500" : "bg-red-500"}`}></span>
+        <span className={inStock ? "text-green-600" : "text-red-500"}>
+          {inStock ? `In Stock (${variant?.stock} left)` : "Out of Stock"}
+        </span>
       </div>
+
+      {/* SKU */}
+      <p className="text-xs text-text-light">SKU: {variant?.sku}</p>
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="bg-primary text-white py-3 rounded-lg">
+        <button
+          disabled={!inStock}
+          className="bg-primary text-white py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+        >
           Add to Cart
         </button>
-        <button className="bg-secondary py-3 rounded-lg">
+        <button
+          disabled={!inStock}
+          className="bg-secondary py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
+        >
           Buy Now
         </button>
       </div>

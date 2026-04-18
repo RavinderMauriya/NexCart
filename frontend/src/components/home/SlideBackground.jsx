@@ -27,7 +27,7 @@ const SlideBackground = () => {
     }, [])
 
     return (
-        <section className="mt-4 overflow-hidden rounded-xl md:rounded-2xl">
+        <section className="overflow-hidden rounded-xl md:rounded-2xl">
 
             <div
                 ref={scrollRef}
@@ -36,12 +36,13 @@ const SlideBackground = () => {
                 {slides.map((img, i) => (
                     <div
                         key={i}
-                        className="min-w-full h-40 sm:h-48 md:h-64 lg:h-96 snap-start relative shrink-0"
+                        className="min-w-full aspect-[2/1] sm:aspect-[5/2] md:aspect-[3/1] lg:aspect-[4/1] snap-start relative shrink-0"
                     >
                         <img
                             src={img}
                             className="w-full h-full object-cover brightness-75"
                             alt=""
+                            loading="lazy"
                         />
 
                         {/* overlay */}

@@ -9,7 +9,7 @@ import Section from '../components/home/Section'
 
 const Home = () => {
   return (
-    <div className='bg-bg-main'>
+    <div className='bg-bg-main min-h-[calc(100vh-200px)]'>
       <SlideBackground/>
       <CircularIcons/>
       <Section/>
