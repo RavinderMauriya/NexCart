@@ -6,11 +6,10 @@ const ProfileSidebar = () => {
   const { logout, user } = useContext(AuthContext);
   return (
     <div className="bg-bg-card p-5 rounded-xl shadow space-y-4">
-      <div className="flex items-center gap-4">
-        <div className="h-12 w-12 bg-gray-200 rounded-full" />
-        <div>
-          <p className="text-xs text-gray-500">Hello,</p>
-          <h2 className="font-semibold">{user?.name}</h2>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex">
+          <p className="text-lg text-text-light">Hello,&nbsp;</p>
+          <h2 className="text-lg font-semibold">{user?.name}</h2>
         </div>
       </div>
 

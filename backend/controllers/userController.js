@@ -103,7 +103,9 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Avatar uploaded successfully",
-    url: result.url,
+    data: {
+      avatar: result.url,
+    },
   });
 });
 
