@@ -12,10 +12,10 @@ export default function Products() {
   const [openIndex, setOpenIndex] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  //  FETCH 
+  //  FETCH
   const fetchProducts = async () => {
     setLoading(true);
-    const res = await apiRequest("/products", "GET", null, token);
+    const res = await apiRequest("/products?limit=1000", "GET", null, token);
     if (res.success) {
       setProducts(res.data.products || res.products || []);
     }

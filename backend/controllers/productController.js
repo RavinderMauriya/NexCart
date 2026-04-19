@@ -1,4 +1,5 @@
 import Product from "../models/productSchema.js";
+import Category from "../models/categorySchema.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import imagekit from "../utils/imagekit.js";
 
@@ -26,7 +27,13 @@ export const getProducts = asyncHandler(async (req, res) => {
     }
 
     // BASIC FILTERS
-    if (category) query.category = category;
+    // CATEGORY FILTER - includes products from subcategories
+    if (category) {
+        // Get all child categories of the selected category
+        const childCategories = await Category.find({ parent: category }).select("_id").lean();
+        const categoryIds = [category, ...childCategories.map(c => c._id.toString())];
+        query.category = { $in: categoryIds };
+    }
     if (brand) query.brand = brand;
 
     if (rating && !isNaN(rating)) {

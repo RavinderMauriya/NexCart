@@ -8,54 +8,35 @@ import { apiRequest } from "../services/api";
 
 const ProductDetailPage = () => {
     const { id } = useParams();
-
     const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedAttrs, setSelectedAttrs] = useState({});
 
     useEffect(() => {
-        const fetchProductById = async () => {
-            try {
-                const res = await apiRequest(`/products/${id}`);
+        if (!id) return;
+        apiRequest(`/products/${id}`)
+            .then((res) => {
                 const data = res?.data;
-
-                if (data) {
-                    setProduct(data);
-                    // Set default variant (first one)
-                    const defaultVariant = data.variants?.[0] || null;
-                    setSelectedVariant(defaultVariant);
-                    // Set default attributes from first variant
-                    if (defaultVariant?.attributes) {
-                        setSelectedAttrs(defaultVariant.attributes);
-                    }
-                }
-            } catch (err) {
-                console.log(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (id) fetchProductById();
+                if (!data) return;
+                setProduct(data);
+                const defaultVariant = data.variants?.[0] || null;
+                setSelectedVariant(defaultVariant);
+                if (defaultVariant?.attributes) setSelectedAttrs(defaultVariant.attributes);
+            })
+            .catch(console.error);
     }, [id]);
 
-    // Find variant when attributes change
     const handleAttributeChange = (attrName, value) => {
         const newAttrs = { ...selectedAttrs, [attrName]: value };
         setSelectedAttrs(newAttrs);
-
-        // Find matching variant
         const matched = product.variants.find(v =>
-            Object.entries(newAttrs).every(
-                ([key, val]) => v.attributes?.[key] === val
-            )
+            Object.entries(newAttrs).every(([key, val]) => v.attributes?.[key] === val)
         );
-
         if (matched) setSelectedVariant(matched);
     };
 
-    if (loading) return <p className="p-6">Loading...</p>;
+    // loading state (no extra state needed)
+    if (product === null) return <p className="p-6">Loading...</p>;
     if (!product) return <div className="text-center pt-24">Product not found</div>;
 
     return (
