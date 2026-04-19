@@ -1,4 +1,9 @@
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { CartContext } from "../../context/cartContext";
+
 const ProductInfo = ({
+  productId,
   title,
   description,
   brand,
@@ -12,8 +17,12 @@ const ProductInfo = ({
   const displayPrice = variant?.discountPrice || variant?.price;
   const originalPrice = variant?.discountPrice ? variant?.price : null;
   const inStock = variant?.stock > 0;
+  
+  const navigate = useNavigate();
+  const { addToCart } = useContext(CartContext); 
 
   return (
+    
     <div className="bg-bg-card p-6 md:p-8 rounded-xl shadow space-y-6">
 
       {/* Brand & Title */}
@@ -68,19 +77,31 @@ const ProductInfo = ({
         </span>
       </div>
 
-      {/* SKU */}
-      <p className="text-xs text-text-light">SKU: {variant?.sku}</p>
+      {/* SKU trancate for long length convert to ... */}
+      <p className="text-xs text-text-light truncate" title={variant?.sku}>SKU: {variant?.sku}</p>
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-3">
         <button
-          disabled={!inStock}
+          disabled={!inStock || !variant?._id}
+          onClick={() => {
+            if (!variant?._id) {
+              alert("Error: Variant ID missing. Please refresh the page.");
+              return;
+            }
+            addToCart({
+              productId,
+              variantId: variant._id,
+              quantity: 1
+            });
+          }}
           className="bg-primary text-white py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
         >
           Add to Cart
         </button>
         <button
           disabled={!inStock}
+          onClick={() => console.log("Buy now clicked")}
           className="bg-secondary py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
         >
           Buy Now

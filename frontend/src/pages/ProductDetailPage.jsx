@@ -51,6 +51,7 @@ const ProductDetailPage = () => {
 
                     <div className="lg:col-span-7">
                         <ProductInfo
+                            productId={product._id}
                             title={product.title}
                             description={product.description}
                             brand={product.brand}

@@ -10,7 +10,7 @@ export default function ProductImages() {
 
   const [product, setProduct] = useState(null);
 
-  // ================= FETCH PRODUCT =================
+  //  FETCH PRODUCT 
   const fetchProduct = async () => {
     const res = await apiRequest(`/products/${id}`, "GET", null, token);
     if (res.success) {
@@ -22,7 +22,7 @@ export default function ProductImages() {
     fetchProduct();
   }, []);
 
-  // ================= UPLOAD =================
+  //  UPLOAD 
   const uploadImages = async (e, variantId) => {
     const files = e.target.files;
 

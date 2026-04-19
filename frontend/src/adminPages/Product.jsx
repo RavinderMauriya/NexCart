@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
@@ -36,10 +36,10 @@ export default function Products() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Products</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-xl sm:text-2xl font-semibold">Products</h1>
 
         <Button onClick={() => navigate("/admin/products/add")}>
           + Add Product
@@ -66,9 +66,9 @@ export default function Products() {
             className="border rounded-xl p-4 shadow-sm bg-white"
           >
             {/* TOP */}
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-lg font-semibold">{p.title}</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-semibold break-words">{p.title}</h2>
                 <p className="text-sm text-gray-500">{p.brand}</p>
 
                 {/* PRICE (use DB fields, not calc) */}
@@ -78,7 +78,7 @@ export default function Products() {
               </div>
 
               {/* ACTIONS */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   onClick={() =>
                     setOpenIndex(openIndex === i ? null : i)
@@ -97,7 +97,7 @@ export default function Products() {
 
             {/* VARIANTS */}
             {openIndex === i && (
-              <div className="mt-4 grid md:grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {p.variants.map((v, idx) => (
                   <div
                     key={idx}

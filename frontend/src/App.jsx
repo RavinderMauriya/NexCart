@@ -12,6 +12,7 @@ import Order from "./components/profile/Order";
 import ProfileDetails from "./components/profile/profileDetails";
 import Address from "./components/profile/Address";
 import { OrderProvider } from "./context/orderContext";
+import { CartProvider } from "./context/cartContext";
 
 //auth and admin routes
 import { AuthProvider } from "./context/authContext";
@@ -30,6 +31,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <CartProvider>
         <OrderProvider>
           <Navbar />
           <main className="min-h-[calc(100vh-180px)] pb-16 md:pb-0">
@@ -86,6 +88,7 @@ const App = () => {
           <MobileBottomNav />
           <AuthModal />
         </OrderProvider>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );

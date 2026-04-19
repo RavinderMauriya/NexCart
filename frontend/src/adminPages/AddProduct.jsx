@@ -124,9 +124,9 @@ export default function AddProduct() {
     }
   };
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/*  BASIC INFO  */}
-      <div className="bg-white p-4 rounded shadow space-y-3">
+      <div className="bg-white p-3 sm:p-4 rounded shadow space-y-3">
         <h2 className="font-semibold text-lg">Basic Info</h2>
 
         <Input
@@ -160,7 +160,7 @@ export default function AddProduct() {
       </div>
 
       {/*  ATTRIBUTES  */}
-      <div className="bg-white p-4 rounded shadow space-y-3">
+      <div className="bg-white p-3 sm:p-4 rounded shadow space-y-3">
         <h2 className="font-semibold text-lg">Attributes</h2>
 
         <Input
@@ -169,7 +169,7 @@ export default function AddProduct() {
           onChange={(e) => setAttrName(e.target.value)}
         />
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             placeholder="Value (Red)"
             value={attrValue}
@@ -190,10 +190,10 @@ export default function AddProduct() {
 
       {/*  VARIANTS  */}
       {variants.length > 0 && (
-        <div className="bg-white p-4 rounded shadow space-y-3">
-          <h2 className="font-semibold text-lg">Variants</h2>
+        <div className="bg-white p-3 sm:p-4 rounded shadow space-y-3">
+          <h2 className="font-semibold text-base sm:text-lg">Variants</h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {variants.map((v, i) => (
               <div key={i} className="border p-3 rounded space-y-2">
                 <div>

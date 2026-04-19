@@ -4,8 +4,8 @@ import asyncHandler from '../utils/asyncHandler.js'
 
 //get cart
 export const getCart = asyncHandler(async (req, res) => {
-    const cartItem = await Cart.find({ user: req.userId }).populate("items.product");
-    res.status(200).json({ success: true, data: cartItem })
+    const cart = await Cart.findOne({ user: req.userId }).populate("items.product");
+    res.status(200).json({ success: true, data: cart || { items: [] } })
 });
 
 //add item in cart

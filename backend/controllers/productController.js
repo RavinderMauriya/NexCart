@@ -3,6 +3,15 @@ import Category from "../models/categorySchema.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import imagekit from "../utils/imagekit.js";
 
+// Get unique brands from all products
+export const getBrands = asyncHandler(async (req, res) => {
+    const brands = await Product.distinct("brand");
+    res.json({
+        success: true,
+        data: brands.filter(Boolean).sort()
+    });
+});
+
 export const getProducts = asyncHandler(async (req, res) => {
     let {
         page = 1,

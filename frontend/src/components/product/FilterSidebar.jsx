@@ -22,7 +22,7 @@ const FilterSidebar = ({ isMobileOpen, onMobileClose }) => {
       try {
         const [catRes, brandRes] = await Promise.all([
           apiRequest("/category"),
-          apiRequest("/products/brands"), // Assuming this endpoint exists
+          apiRequest("/products/brands"),
         ]);
 
         if (catRes.success) setCategories(catRes.data || []);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
 
@@ -40,33 +40,33 @@ export default function Orders() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Orders</h1>
+    <div className="space-y-3 sm:space-y-4">
+      <h1 className="text-xl sm:text-2xl font-bold">Orders</h1>
 
       {orders.map((o, i) => (
-        <div key={o._id} className="bg-bg-card border rounded-xl shadow-sm p-4">
+        <div key={o._id} className="bg-bg-card border rounded-xl shadow-sm p-3 sm:p-4">
           {/* TOP SECTION */}
-          <div className="flex justify-between items-center flex-wrap gap-3">
-            <div>
-              <div className="font-semibold text-sm text-text-light">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3">
+            <div className="min-w-0">
+              <div className="font-semibold text-xs sm:text-sm text-text-light">
                 Order ID
               </div>
-              <div className="font-medium">{o._id}</div>
+              <div className="font-medium text-sm truncate max-w-[150px] sm:max-w-[200px]">{o._id}</div>
             </div>
 
             <div>
-              <div className="text-sm text-text-light">Amount</div>
-              <div className="font-semibold">₹{o.totalAmount}</div>
+              <div className="text-xs sm:text-sm text-text-light">Amount</div>
+              <div className="font-semibold text-sm">₹{o.totalAmount}</div>
             </div>
 
             <div>
-              <div className="text-sm text-text-light">Payment</div>
-              <div className="font-medium">{o.paymentStatus}</div>
+              <div className="text-xs sm:text-sm text-text-light">Payment</div>
+              <div className="font-medium text-sm">{o.paymentStatus}</div>
             </div>
 
             {/* STATUS BADGE */}
             <div
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                 statusStyles[o.status]
               }`}
             >
@@ -75,7 +75,7 @@ export default function Orders() {
 
             {/* STATUS UPDATE */}
             <select
-              className="border p-2 rounded bg-bg-card"
+              className="border p-1.5 sm:p-2 rounded bg-bg-card text-sm"
               value={o.status}
               onChange={(e) => updateStatus(o._id, e.target.value)}
             >
@@ -91,9 +91,9 @@ export default function Orders() {
               onClick={() =>
                 setOpenOrderId(openOrderId === o._id ? null : o._id)
               }
-              className="text-primary text-sm"
+              className="text-primary text-xs sm:text-sm"
             >
-              {openOrderId === o._id ? "Hide" : "View Details"}
+              {openOrderId === o._id ? "Hide" : "View"}
             </button>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import { apiRequest } from "../../services/api";
 
@@ -15,7 +15,7 @@ const Address = () => {
     pincode: "",
   });
 
-  // ================= FETCH =================
+  //  FETCH 
   const fetchAddress = async () => {
     const res = await apiRequest("/user/profile/address", "GET", null, token);
     if (res.success) {
@@ -27,12 +27,12 @@ const Address = () => {
     fetchAddress();
   }, []);
 
-  // ================= HANDLE CHANGE =================
+  //  HANDLE CHANGE 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ================= ADD ADDRESS =================
+  //  ADD ADDRESS 
   const addAddress = async () => {
     const res = await apiRequest(
       "/user/profile/address",
@@ -54,12 +54,24 @@ const Address = () => {
     }
   };
 
-  // ================= DELETE =================
+  //  DELETE 
   const deleteAddress = async (id) => {
     const res = await apiRequest(
       `/user/profile/address/${id}`,
       "DELETE",
       null,
+      token
+    );
+
+    if (res.success) fetchAddress();
+  };
+
+  //  SET DEFAULT 
+  const setDefaultAddress = async (id) => {
+    const res = await apiRequest(
+      `/user/profile/address/${id}`,
+      "PUT",
+      { isDefault: true },
       token
     );
 
@@ -96,25 +108,40 @@ const Address = () => {
       {/* LIST */}
       {addresses.map((addr, i) => (
         <div
-          key={i}
-          className="bg-white border p-4 rounded-xl flex justify-between items-start"
+          key={addr._id || i}
+          className={`bg-white border p-4 rounded-xl flex justify-between items-start ${addr.isDefault ? 'border-primary border-2' : ''}`}
         >
           <div className="text-sm">
-            <p className="font-medium">
-              {addr.fullName} ({addr.phone})
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="font-medium">
+                {addr.fullName} ({addr.phone})
+              </p>
+              {addr.isDefault && (
+                <span className="bg-primary text-white text-xs px-2 py-0.5 rounded">Default</span>
+              )}
+            </div>
             <p>{addr.addressLine}</p>
             <p>
               {addr.city}, {addr.state} - {addr.pincode}
             </p>
           </div>
 
-          <button
-            onClick={() => deleteAddress(addr._id)}
-            className="text-red-500 text-sm"
-          >
-            Delete
-          </button>
+          <div className="flex flex-col gap-2 items-end">
+            {!addr.isDefault && (
+              <button
+                onClick={() => setDefaultAddress(addr._id)}
+                className="text-primary text-sm font-semibold"
+              >
+                Set as Default
+              </button>
+            )}
+            <button
+              onClick={() => deleteAddress(addr._id)}
+              className="text-red-500 text-sm"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       ))}
     </div>

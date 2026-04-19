@@ -71,10 +71,10 @@ export default function Categories() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
       {/* LEFT: FORM */}
-      <div className="bg-white p-4 rounded shadow space-y-4">
-        <h2 className="text-lg font-semibold">Add Category</h2>
+      <div className="bg-white p-3 sm:p-4 rounded shadow space-y-3 sm:space-y-4">
+        <h2 className="text-base sm:text-lg font-semibold">Add Category</h2>
 
         <Input
           placeholder="Category name"
@@ -83,7 +83,7 @@ export default function Categories() {
         />
 
         <select
-          className="border p-2 rounded w-full"
+          className="border p-2 rounded w-full text-sm"
           value={parent}
           onChange={(e) => setParent(e.target.value)}
         >
@@ -99,30 +99,43 @@ export default function Categories() {
       </div>
 
       {/* RIGHT: LIST */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-4">Category List</h2>
+      <div className="bg-white p-3 sm:p-4 rounded shadow">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Category List</h2>
 
-        <table className="w-full border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Parent</th>
-              <th className="p-2 border">Action</th>
-              
-            </tr>
-          </thead>
+        {/* Mobile Card View */}
+        <div className="lg:hidden space-y-2">
+          {categories.map((cat) => (
+            <div key={cat._id} className="border rounded-lg p-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium text-sm">{cat.name}</p>
+                <p className="text-xs text-gray-500">Parent: {getParentName(cat.parent)}</p>
+              </div>
+              <button onClick={()=>catDelete(cat._id)} className="text-red-500 text-sm px-2 py-1">Delete</button>
+            </div>
+          ))}
+        </div>
 
-          <tbody>
-            {categories.map((cat) => (
-              <tr key={cat._id}>
-                <td className="p-2 border">{cat.name}</td>
-                <td className="p-2 border">{getParentName(cat.parent)}</td>
-                <td className="p-2 border"><button onClick={()=>catDelete(cat._id)}>Delete</button></td>
-                
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full border text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 border">Name</th>
+                <th className="p-2 border">Parent</th>
+                <th className="p-2 border">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categories.map((cat) => (
+                <tr key={cat._id}>
+                  <td className="p-2 border">{cat.name}</td>
+                  <td className="p-2 border">{getParentName(cat.parent)}</td>
+                  <td className="p-2 border"><button onClick={()=>catDelete(cat._id)} className="text-red-500">Delete</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

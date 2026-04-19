@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Search, ShoppingCart, User, MapPin, X } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
+import { CartContext } from "../context/cartContext";
 import { apiRequest } from "../services/api";
 
 const Navbar = () => {
@@ -9,6 +10,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const { openModal, user } = useContext(AuthContext);
+  const { cart } = useContext(CartContext);
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,10 +104,14 @@ const Navbar = () => {
 
           <Link
             to="/cart"
-            className="flex items-center text-text-dark hover:text-primary"
+            className="flex items-center text-text-dark hover:text-primary relative"
           >
             <ShoppingCart />
-            <span className="hidden lg:block text-sm ml-1">Cart</span>
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
           </Link>
 
           {user?.role === "admin" && (
