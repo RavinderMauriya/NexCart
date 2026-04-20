@@ -85,6 +85,8 @@ const ProductInfo = ({
         <button
           disabled={!inStock || !variant?._id}
           onClick={() => {
+            console.log("[ProductInfo] Add to Cart clicked");
+            console.log("[ProductInfo] productId:", productId, "variantId:", variant?._id);
             if (!variant?._id) {
               alert("Error: Variant ID missing. Please refresh the page.");
               return;

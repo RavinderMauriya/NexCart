@@ -33,3 +33,8 @@
   -ms-overflow-style: none;  /* IE + Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+/* safe area padding for mobile notch devices */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

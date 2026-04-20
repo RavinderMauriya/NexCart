@@ -5,15 +5,33 @@ import { Link } from "react-router-dom";
 const CartItem = ({ item }) => {
   const { updateCart, removeFromCart } = useContext(CartContext);
 
-  const { productId, variantId, name, variant, price, originalPrice, image, quantity, stock } = item;
+  // Destructure item properties
+  const {
+    productId,
+    variantId,
+    name,
+    variant,
+    price,
+    originalPrice,
+    image,
+    quantity,
+    stock
+  } = item;
 
-  const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
-  const maxQty = stock || 1;
-  const canIncrease = quantity < maxQty;
+  // Derived values
+  const discount = originalPrice > price
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    : 0;
+  const canIncrease = quantity < stock;
   const canDecrease = quantity > 1;
 
+  // Format variant for display (backend returns object, convert to string)
+  const variantText = variant && typeof variant === 'object'
+    ? Object.entries(variant).map(([k, v]) => `${k}: ${v}`).join(', ')
+    : variant;
+
   const handleQtyChange = (newQty) => {
-    if (newQty >= 1 && newQty <= maxQty) {
+    if (newQty >= 1 && newQty <= stock) {
       updateCart({ productId, variantId, quantity: newQty });
     }
   };
@@ -29,7 +47,7 @@ const CartItem = ({ item }) => {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <Link to={`/products/${productId}`}>
               <h2 className="font-semibold text-base sm:text-lg hover:text-primary">{name}</h2>
-              {variant && <p className="text-sm text-text-light">{variant}</p>}
+              {variantText && <p className="text-sm text-text-light">{variantText}</p>}
             </Link>
 
             <div className="text-left sm:text-right">
