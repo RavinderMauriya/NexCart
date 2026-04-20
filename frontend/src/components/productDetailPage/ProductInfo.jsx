@@ -12,7 +12,8 @@ const ProductInfo = ({
   variant,
   attributes,
   selectedAttrs,
-  onAttributeChange
+  onAttributeChange,
+  onBuyNow
 }) => {
   const displayPrice = variant?.discountPrice || variant?.price;
   const originalPrice = variant?.discountPrice ? variant?.price : null;
@@ -102,8 +103,23 @@ const ProductInfo = ({
           Add to Cart
         </button>
         <button
-          disabled={!inStock}
-          onClick={() => console.log("Buy now clicked")}
+          disabled={!inStock || !variant?._id}
+          onClick={() => {
+            if (!variant?._id) {
+              alert("Error: Variant ID missing. Please refresh the page.");
+              return;
+            }
+            onBuyNow({
+              productId,
+              variantId: variant._id,
+              quantity: 1,
+              title,
+              price: variant?.discountPrice || variant?.price,
+              originalPrice: variant?.price,
+              variant,
+              image: variant?.images?.[0]
+            });
+          }}
           className="bg-secondary py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80 transition-colors"
         >
           Buy Now

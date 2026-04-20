@@ -119,6 +119,10 @@ export const createOrder = asyncHandler(async (req, res) => {
         receipt: order._id.toString(),
     });
 
+    // Save razorpay order ID for tracking
+    order.razorpayOrderId = razorpayOrder.id;
+    await order.save();
+
     return res.status(201).json({
         success: true,
         data: {
@@ -175,6 +179,7 @@ export const verifyPayment = asyncHandler(async (req, res) => {
     // UPDATE ORDER STATUS
     order.paymentStatus = "paid";
     order.status = "confirmed";
+    order.razorpayPaymentId = razorpay_payment_id;
 
     // REDUCE STOCK
     for (const item of order.items) {

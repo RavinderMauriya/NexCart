@@ -27,7 +27,7 @@ const SlideBackground = () => {
     }, [])
 
     return (
-        <section className="overflow-hidden rounded-xl md:rounded-2xl">
+        <section className="overflow-hidden rounded">
 
             <div
                 ref={scrollRef}

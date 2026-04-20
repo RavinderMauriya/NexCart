@@ -1,14 +1,12 @@
-import { Home, ShoppingBag, Package, User, ShoppingCart } from "lucide-react";
+import { Home, ShoppingBag, Package, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import { CartContext } from "../context/cartContext";
 
 const MobileBottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { openModal, user } = useContext(AuthContext);
-  const { cart } = useContext(CartContext);
 
   const isActive = (path) => location.pathname === path;
 
@@ -23,7 +21,6 @@ const MobileBottomNav = () => {
   const navItems = [
     { path: "/", icon: Home, label: "Home", auth: false },
     { path: "/products", icon: ShoppingBag, label: "Shop", auth: false },
-    { path: "/cart", icon: ShoppingCart, label: "Cart", auth: false, badge: cart.length },
     { path: "/profile/orders", icon: Package, label: "Orders", auth: true },
     { path: "/profile", icon: User, label: "Account", auth: true },
   ];
@@ -47,11 +44,10 @@ const MobileBottomNav = () => {
               key={item.path}
               to={item.path}
               onClick={handleClick}
-              className={`relative flex flex-col items-center justify-center min-w-[56px] min-h-[48px] rounded-xl transition-all duration-200 ${
-                active
+              className={`relative flex flex-col items-center justify-center min-w-[56px] min-h-[48px] rounded-xl transition-all duration-200 ${active
                   ? "text-primary bg-primary/10"
                   : "text-text-light hover:text-text-dark hover:bg-gray-100"
-              }`}
+                }`}
             >
               <div className="relative">
                 <Icon size={22} strokeWidth={active ? 2.5 : 2} />

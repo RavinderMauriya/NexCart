@@ -4,8 +4,13 @@ import { AuthContext } from "./authContext";
 
 export const CartContext = createContext();
 
+// Helper to check if error is auth related
+const isAuthError = (res) => {
+  return !res.success && (res.message?.includes("token") || res.message?.includes("unauthorized") || res.message?.includes("auth"));
+};
+
 export const CartProvider = ({ children }) => {
-  const { token, openModal } = useContext(AuthContext);
+  const { token, openModal, refreshToken, logout } = useContext(AuthContext);
 
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +21,20 @@ export const CartProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await apiRequest("/cart", "GET", null, token);
-      // Backend already returns: { items: [{ productId, variantId, name, price, ... }] }
+
+      // Handle token expiration
+      if (isAuthError(res)) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          const retryRes = await apiRequest("/cart", "GET", null, newToken);
+          setCart(retryRes.items || []);
+        } else {
+          logout();
+          openModal("login");
+        }
+        return;
+      }
+
       setCart(res.items || []);
     } catch (err) {
       console.error("Cart fetch error:", err);
@@ -25,16 +43,33 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // add to cart
+  // add to cart with token refresh support
   const addToCart = async ({ productId, variantId, quantity = 1 }) => {
     if (!token) {
       openModal("login");
       return;
     }
     if (!productId || !variantId) return;
+
     try {
-      await apiRequest("/cart/add", "POST", { productId, variantId, quantity }, token);
-      fetchCart();
+      const res = await apiRequest("/cart/add", "POST", { productId, variantId, quantity }, token);
+
+      // Handle token expiration
+      if (isAuthError(res)) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          await apiRequest("/cart/add", "POST", { productId, variantId, quantity }, newToken);
+          fetchCart();
+        } else {
+          logout();
+          openModal("login");
+        }
+        return;
+      }
+
+      if (res.success) {
+        fetchCart();
+      }
     } catch (err) {
       console.error("Add to cart error:", err);
     }
@@ -51,8 +86,25 @@ export const CartProvider = ({ children }) => {
       ),
     );
     setActionLoading((prev) => ({ ...prev, [key]: true }));
+
     try {
-      await apiRequest("/cart/update", "PUT", { productId, variantId, quantity }, token);
+      const res = await apiRequest("/cart/update", "PUT", { productId, variantId, quantity }, token);
+
+      // Handle token expiration
+      if (isAuthError(res)) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          await apiRequest("/cart/update", "PUT", { productId, variantId, quantity }, newToken);
+        } else {
+          logout();
+          openModal("login");
+        }
+        return;
+      }
+
+      if (!res.success) {
+        fetchCart();
+      }
     } catch (err) {
       console.error("Update cart error:", err);
       fetchCart();
@@ -70,11 +122,28 @@ export const CartProvider = ({ children }) => {
       ),
     );
     setActionLoading((prev) => ({ ...prev, [key]: true }));
+
     try {
-      await apiRequest("/cart", "DELETE", { productId, variantId }, token);
+      const res = await apiRequest("/cart", "DELETE", { productId, variantId }, token);
+
+      // Handle token expiration
+      if (isAuthError(res)) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          await apiRequest("/cart", "DELETE", { productId, variantId }, newToken);
+        } else {
+          logout();
+          openModal("login");
+        }
+        return;
+      }
+
+      if (!res.success) {
+        fetchCart();
+      }
     } catch (err) {
       console.error("Remove error:", err);
-      fetchCart(); // rollback on error
+      fetchCart();
     } finally {
       setActionLoading((prev) => ({ ...prev, [key]: false }));
     }

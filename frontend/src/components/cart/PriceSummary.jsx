@@ -1,8 +1,10 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/cartContext";
 
 const PriceSummary = () => {
     const { cart } = useContext(CartContext);
+    const navigate = useNavigate();
 
     const itemCount = cart.length;
     const totalMRP = cart.reduce((sum, item) => sum + (item.originalPrice || item.price) * item.quantity, 0);
@@ -19,6 +21,18 @@ const PriceSummary = () => {
             </div>
         );
     }
+
+
+    //handle checkout
+    const handleCheckout = () => {
+        if (hasOutOfStock) {
+            // Remove out of stock items
+            console.log("Remove out of stock items first");
+        } else {
+            // Proceed to checkout
+            navigate("/checkout");
+        }
+    };
 
     return (
         <div className="space-y-4 lg:sticky lg:top-24">
@@ -62,12 +76,13 @@ const PriceSummary = () => {
 
             <button
                 disabled={!canCheckout}
+                 onClick={handleCheckout}
                 className="w-full py-3 sm:py-4 bg-primary text-white font-bold rounded-lg text-sm sm:text-lg active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {hasOutOfStock ? "Remove out of stock items" : "Place Order"}
+                {hasOutOfStock ? "Out of Stock Items" : "Place Order"}
             </button>
 
-            <p className="text-xs text-text-light flex gap-2 items-start px-1">
+            <p className="text-xs text-text-light flex gap-2 items-center px-1">
                 🔒 Safe and Secure Payments. Easy returns.
             </p>
         </div>

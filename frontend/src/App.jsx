@@ -7,6 +7,8 @@ import Footer from "./components/Footer";
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import Profile from "./pages/Profile";
 import Order from "./components/profile/Order";
 import ProfileDetails from "./components/profile/profileDetails";
@@ -44,6 +46,22 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <CartPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order-success"
+                element={
+                  <ProtectedRoute>
+                    <OrderSuccessPage />
                   </ProtectedRoute>
                 }
               />

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ProductGallery from "../components/productDetailPage/ProductGallery";
 import ProductInfo from "../components/productDetailPage/ProductInfo";
 import ProductSpecs from "../components/productDetailPage/ProductSpecs";
@@ -8,6 +8,7 @@ import { apiRequest } from "../services/api";
 
 const ProductDetailPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedAttrs, setSelectedAttrs] = useState({});
@@ -25,6 +26,10 @@ const ProductDetailPage = () => {
             })
             .catch(console.error);
     }, [id]);
+
+    const handleBuyNow = (buyNowItem) => {
+        navigate("/checkout", { state: { buyNowItem } });
+    };
 
     const handleAttributeChange = (attrName, value) => {
         const newAttrs = { ...selectedAttrs, [attrName]: value };
@@ -61,6 +66,7 @@ const ProductDetailPage = () => {
                             attributes={product.attributes}
                             selectedAttrs={selectedAttrs}
                             onAttributeChange={handleAttributeChange}
+                            onBuyNow={handleBuyNow}
                         />
                     </div>
 
