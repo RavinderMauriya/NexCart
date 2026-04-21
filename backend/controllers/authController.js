@@ -66,8 +66,10 @@ export const login = asyncHandler(async (req, res) => {
     //set refresh token in cookie
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false, // true in production
-        sameSite: "lax",
+        // secure: false, // true in production
+        // sameSite: "lax",
+        secure: true, // Required for mobile cross-origin cookies
+        sameSite: "none", // Required for cross-origin on mobile
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
     //send access token in response
@@ -101,7 +103,11 @@ export const refresh = asyncHandler(async (req, res) => {
 });
 
 export const logout = asyncHandler(async (req, res) => {
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    });
     res.status(200).json({
         success: true,
         message: "Logout successful"
