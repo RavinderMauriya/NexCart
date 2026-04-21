@@ -142,7 +142,7 @@ export default function Orders() {
 
                         {/* SKU */}
                         {item.variant?.sku && (
-                          <div className="text-xs text-text-muted">
+                          <div className="text-xs text-text-muted break-all">
                             SKU: {item.variant.sku}
                           </div>
                         )}

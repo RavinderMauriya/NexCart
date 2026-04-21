@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { CartContext } from "../../context/cartContext";
 
 const PriceSummary = () => {
@@ -26,8 +27,7 @@ const PriceSummary = () => {
     //handle checkout
     const handleCheckout = () => {
         if (hasOutOfStock) {
-            // Remove out of stock items
-            console.log("Remove out of stock items first");
+            toast.warning("Remove out of stock items first");
         } else {
             // Proceed to checkout
             navigate("/checkout");

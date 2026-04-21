@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import { CartContext } from "../context/cartContext";
 import { AuthContext } from "../context/authContext";
 import { apiRequest } from "../services/api";
@@ -63,6 +64,7 @@ const CheckoutPage = () => {
 
       if (!orderRes.success) {
         setError(orderRes.message || "Failed to create order");
+        toast.error(orderRes.message || "Failed to create order");
         setLoading(false);
         return;
       }
@@ -70,6 +72,7 @@ const CheckoutPage = () => {
       const { type, orderId, razorpayOrder, amount } = orderRes.data;
 
       if (type === "COD") {
+        toast.success("Order placed successfully!");
         navigate("/order-success", { state: { orderId, amount, paymentMethod: "COD" } });
         return;
       }
@@ -98,11 +101,13 @@ const CheckoutPage = () => {
             }, token);
 
             if (verifyRes.success) {
+              toast.success("Payment successful! Order placed.");
               navigate("/order-success", {
                 state: { orderId, amount, paymentMethod: "ONLINE", paymentId: response.razorpay_payment_id }
               });
             } else {
               setError("Payment verification failed");
+              toast.error("Payment verification failed");
               setLoading(false);
             }
           },
@@ -117,10 +122,12 @@ const CheckoutPage = () => {
         rzp.open();
       } else {
         setError("Payment gateway not available");
+        toast.error("Payment gateway not available");
         setLoading(false);
       }
     } catch {
       setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
       setLoading(false);
     }
   };

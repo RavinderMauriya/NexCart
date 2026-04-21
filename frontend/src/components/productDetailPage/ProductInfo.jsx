@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { CartContext } from "../../context/cartContext";
 
 const ProductInfo = ({
@@ -86,10 +87,9 @@ const ProductInfo = ({
         <button
           disabled={!inStock || !variant?._id}
           onClick={() => {
-            console.log("[ProductInfo] Add to Cart clicked");
             console.log("[ProductInfo] productId:", productId, "variantId:", variant?._id);
             if (!variant?._id) {
-              alert("Error: Variant ID missing. Please refresh the page.");
+              toast.error("Error: Variant ID missing. Please refresh the page.");
               return;
             }
             addToCart({
@@ -97,6 +97,7 @@ const ProductInfo = ({
               variantId: variant._id,
               quantity: 1
             });
+            toast.success("Added to cart");
           }}
           className="bg-primary text-white py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
         >
@@ -106,7 +107,7 @@ const ProductInfo = ({
           disabled={!inStock || !variant?._id}
           onClick={() => {
             if (!variant?._id) {
-              alert("Error: Variant ID missing. Please refresh the page.");
+              toast.error("Error: Variant ID missing. Please refresh the page.");
               return;
             }
             onBuyNow({

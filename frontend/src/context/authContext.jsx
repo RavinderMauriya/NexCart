@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { apiRequest } from "../services/api";
 
 export const AuthContext = createContext();
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       setToken(null);
       localStorage.removeItem("token");
       closeModal();
+      toast.success("Logged out successfully");
     }
   };
 

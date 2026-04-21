@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { apiRequest } from "../services/api";
 import { AuthContext } from "./authContext";
 
@@ -69,9 +70,12 @@ export const CartProvider = ({ children }) => {
 
       if (res.success) {
         fetchCart();
+      } else {
+        toast.error(res.message || "Failed to add item");
       }
     } catch (err) {
       console.error("Add to cart error:", err);
+      toast.error("Something went wrong");
     }
   };
 
@@ -104,10 +108,12 @@ export const CartProvider = ({ children }) => {
 
       if (!res.success) {
         fetchCart();
+        toast.error(res.message || "Failed to update quantity");
       }
     } catch (err) {
       console.error("Update cart error:", err);
       fetchCart();
+      toast.error("Something went wrong");
     } finally {
       setActionLoading((prev) => ({ ...prev, [key]: false }));
     }
@@ -138,12 +144,16 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      if (!res.success) {
+      if (res.success) {
+        toast.success("Removed from cart");
+      } else {
         fetchCart();
+        toast.error(res.message || "Failed to remove item");
       }
     } catch (err) {
       console.error("Remove error:", err);
       fetchCart();
+      toast.error("Something went wrong");
     } finally {
       setActionLoading((prev) => ({ ...prev, [key]: false }));
     }

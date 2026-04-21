@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import MobileBottomNav from "./components/mobileBottomNav";
@@ -105,6 +106,7 @@ const App = () => {
 
           <MobileBottomNav />
           <AuthModal />
+          <Toaster position="top-center" reverseOrder={false} />
         </OrderProvider>
         </CartProvider>
       </AuthProvider>
