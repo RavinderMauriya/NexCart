@@ -95,11 +95,11 @@ const Navbar = () => {
         {/* Right */}
         <div className="flex items-center gap-4 md:gap-6">
           <Link
-            to="/address"
+            to="/profile/address"
             className="hidden md:flex items-center text-text-dark hover:text-primary"
           >
             <MapPin />
-            <span className="hidden lg:block text-sm ml-1">141001</span>
+            <span className="hidden lg:block text-sm ml-1"></span>
           </Link>
 
           <Link

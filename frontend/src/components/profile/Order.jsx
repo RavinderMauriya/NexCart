@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { OrderContext } from "../../context/orderContext";
 
 const Order = () => {
-  const { orders, fetchMyOrders, loading } = useContext(OrderContext);
+  const { orders, fetchMyOrders, cancelOrder, returnOrder, loading } = useContext(OrderContext);
 
   useEffect(() => {
     fetchMyOrders();
@@ -21,7 +21,7 @@ const Order = () => {
       )}
 
       {orders.map((o) => (
-        <div key={o._id} className="bg-bg-card border rounded-xl p-4 shadow-sm">
+        <div key={o._id} className="bg-gradient-to-br from-yellow-50 to-blue-50 border rounded-xl p-4 shadow-sm">
           {/* TOP */}
           <div className="flex justify-between flex-wrap gap-3">
             <div>
@@ -42,10 +42,32 @@ const Order = () => {
             </div>
           </div>
 
+          {/* CANCEL / RETURN BUTTON */}
+          {["pending", "confirmed"].includes(o.status) && (
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={() => cancelOrder(o._id)}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-200 transition"
+              >
+                Cancel Order
+              </button>
+            </div>
+          )}
+          {o.status === "delivered" && (
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={() => returnOrder(o._id)}
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-400 transition"
+              >
+                Return Order
+              </button>
+            </div>
+          )}
+
           {/* ITEMS */}
           <div className="mt-4 space-y-3">
             {o.items.map((item, idx) => (
-              <div key={idx} className="flex gap-3 border rounded-lg p-3">
+              <div key={idx} className="flex gap-3 border rounded-lg p-3 bg-gradient-to-r from-blue-50/30 to-indigo-50/30">
                 <img
                   src={item.variant?.images?.[0]}
                   className="w-16 h-16 object-cover rounded"

@@ -1,13 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 const products = [
   { id: 1, name: "Classic T-Shirt", price: "₹799", image: "https://picsum.photos/id/1025/400/500" },
   { id: 2, name: "Denim Jacket", price: "₹1999", image: "https://picsum.photos/id/1074/400/500" },
   { id: 3, name: "Casual Shirt", price: "₹999", image: "https://picsum.photos/id/1011/400/500" },
   { id: 4, name: "Hoodie", price: "₹1499", image: "https://picsum.photos/id/1005/400/500" },
-  { id: 5, name: "Jeans", price: "₹1299", image: "https://picsum.photos/id/1047/400/500" },
-  { id: 6, name: "Sweater", price: "₹1199", image: "https://picsum.photos/id/1028/400/500" }
+  { id: 5, name: "Jeans", price: "₹1299", image: "https://picsum.photos/id/1047/400/500" }
 ];
 
 const ClothingSection = () => {
+  const navigate = useNavigate();
   return (
     <section
       className="max-w-7xl mx-auto px-4 py-10 rounded-xl"
@@ -21,6 +23,7 @@ const ClothingSection = () => {
         </h2>
 
         <button
+         onClick={() => navigate("/products?category=69d3d85a2b68b4929dc94848")}
           className="text-sm font-semibold transition-all hover:opacity-80 text-text-dark hover:text-primary"
         >
           View More →

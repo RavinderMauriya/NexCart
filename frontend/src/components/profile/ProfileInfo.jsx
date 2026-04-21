@@ -61,10 +61,10 @@ const ProfileInfo = () => {
   return (
     <Card>
       {/* HEADER */}
-      <div className="flex justify-between items-center p-6 border-b">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b gap-4">
         <div className="flex items-center gap-4">
           {/* AVATAR */}
-          <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center shrink-0">
             {user?.profileImage?.url ? (
               <img
                 src={user.profileImage.url}
@@ -76,18 +76,18 @@ const ProfileInfo = () => {
             )}
           </div>
 
-          <div>
-            <h3 className="font-semibold">{user.name}</h3>
-            <p className="text-sm text-gray-500">{user.email}</p>
+          <div className="min-w-0">
+            <h3 className="font-semibold truncate">{user.name}</h3>
+            <p className="text-sm text-gray-500 truncate">{user.email}</p>
           </div>
         </div>
 
         {/* BUTTON */}
-        <div>
+        <div className="w-full sm:w-auto">
           <button
             onClick={triggerUpload}
             disabled={uploading}
-            className="px-4 py-1 border rounded"
+            className="w-full sm:w-auto px-4 py-2 border rounded text-sm whitespace-nowrap"
           >
             {uploading ? "Uploading..." : "Upload Avatar"}
           </button>
@@ -125,108 +125,3 @@ const Card = ({ children }) => (
 );
 
 export default ProfileInfo;
-
-// import { useContext, useRef, useState } from "react";
-// import { AuthContext } from "../../context/authContext";
-// import { apiRequest } from "../../services/api";
-
-// const useAvatarUpload = (token, setUser) => {
-//   const [uploading, setUploading] = useState(false);
-//   const fileInputRef = useRef(null);
-
-//   const triggerUpload = () => fileInputRef.current?.click();
-
-//   const handleUpload = async (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     setUploading(true);
-//     try {
-//       const formData = new FormData();
-//       formData.append("avatar", file);
-//       const res = await apiRequest("/user/profile/upload-avatar", "POST", formData, token, true);
-//       if (res.success) setUser((prev) => ({ ...prev, profileImage: { url: res.data.avatar } }));
-//     } catch (err) {
-//       console.error("Avatar upload failed:", err);
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
-
-//   return { uploading, fileInputRef, triggerUpload, handleUpload };
-// };
-
-// const Avatar = ({ user }) => (
-//   <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-lg font-semibold overflow-hidden">
-//     {user?.profileImage?.url ? (
-//       <img src={user.profileImage.url} alt="Avatar" className="w-full h-full object-cover" />
-//     ) : (
-//       user?.name?.charAt(0)?.toUpperCase() || "U"
-//     )}
-//   </div>
-// );
-
-// const InfoItem = ({ label, value, className = "" }) => (
-//   <div>
-//     <p className="text-gray-400 text-xs mb-1">{label}</p>
-//     <p className={`font-medium ${className}`}>{value || "-"}</p>
-//   </div>
-// );
-
-// const ActionButtons = ({ uploading, triggerUpload, fileInputRef, handleUpload }) => (
-//   <div className="flex items-center gap-2">
-//     <button
-//       onClick={triggerUpload}
-//       disabled={uploading}
-//       className="text-sm px-4 py-1.5 border rounded-lg hover:bg-gray-100 disabled:opacity-50"
-//     >
-//       {uploading ? "Uploading..." : "Upload Avatar"}
-//     </button>
-//     <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-//   </div>
-// );
-
-// const ProfileInfo = () => {
-//   const { user, loading, setUser, token } = useContext(AuthContext);
-//   const avatar = useAvatarUpload(token, setUser);
-
-//   const FIELDS = [
-//     { label: "Full Name", key: "name" },
-//     { label: "Email Address", key: "email" },
-//     { label: "Account Role", key: "role", capitalize: true },
-//     { label: "Account Status", value: "Active", className: "text-green-600" },
-//   ];
-
-//   if (loading) return <Card><p className="text-sm text-gray-500">Loading profile...</p></Card>;
-//   if (!user) return <Card><p className="text-sm text-gray-400">No user data available</p></Card>;
-
-//   return (
-//     <Card>
-//       <div className="flex items-center justify-between p-6 border-b">
-//         <div className="flex items-center gap-4">
-//           <Avatar user={user} />
-//           <div>
-//             <h3 className="font-semibold text-lg">{user.name}</h3>
-//             <p className="text-sm text-gray-500">{user.email}</p>
-//           </div>
-//         </div>
-//         <ActionButtons {...avatar} />
-//       </div>
-
-//       <div className="p-6 grid md:grid-cols-2 gap-6 text-sm">
-//         {FIELDS.map(({ label, key, value, capitalize, className }) => (
-//           <InfoItem
-//             key={label}
-//             label={label}
-//             value={value || (capitalize ? user[key]?.toLowerCase() : user[key])}
-//             className={className}
-//           />
-//         ))}
-//       </div>
-//     </Card>
-//   );
-// };
-
-// const Card = ({ children }) => <div className="bg-white rounded-xl shadow border">{children}</div>;
-
-// export default ProfileInfo;

@@ -1,75 +1,122 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, ImageOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuD-ulzcVB4j05wDVt0Oy4VkMWS8MNJAHEp4kjxZvCp4rrgyrhA8QfonwwQCt3yhhDM0KcPXP3a7p4mOF7CNKf0nB-wCUOyFSG5esul36edG9xlwMomI1Jp3ddwMuh9hD_hQZuvc7W_HRW1ijjXsIeH3JnGVQ_vQUrcebQNwJyYcRS8kJ5xqaueG-IH0YF9b-T__U2hrwvEGPug0SAo0ZT1Y3nnqhXmX589INSIWLtMh8wH5V8_elYs215XzlDFzTW8QBB2NMNHq2Jw",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBnQ0OTBACJM4doCbYXkogWd-FzseOCGNwHDfbyY5yHAts2GzWHEhGP_-TVb8HlDdWOTGJLuaZBufcbyIgdF-7naI52xGosQ-NXTdVbv3kryznWPvIrwN9IMx1xwFytiw6aKR5VY_1qB680xLLBruK2yh9zhuWGrWSy_xzWuA8eADspmOYR0tTzJmMjCqCnckMsN7aSW2LWi1D46CVPFfedTWdYvvUl951dDMgwyArv5bu2k4Zvie1hJJUHo9g2uFd3EwfK3IOZYVM",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCa3aFT7Cn0WFMYr0BpoFgr77R6L4LtRv0YM91mTZpR-DYxggR6sA27aCIbrsUwD1lCAFUdgmT2dAuJv4g2jllGlxnPeWUhnD5EIukMKuWeslclgkUWyp2dYpYmOGQEyYbyuBqdyMlfj3Gscgq91WkfjZHaN2x0DcbOr1K4lXQaR7hTcIJa5nd8DEuU2DNxJHgnPGen8FlRF-HPO3rQAkDRY-kGYnD12PdSz1WMPV8upVH1BNkLGjjUeJlBTCANvYaq3zdsCbJk4kc"
-]
+    { id: 1, image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&q=80", title: "Fashion Sale" },
+  { id: 2, image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600", title: "Summer Collection" },
+  { id: 3, image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&q=80", title: "New Arrivals" },
+  { id: 4, image: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1200&q=80", title: "Sneakers Week" },
+  { id: 5, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1600", title: "Head Phones" }
+];
 
-const SlideBackground = () => {
-    const scrollRef = useRef(null)
-    const indexRef = useRef(0) 
+export default function SlideBackground() {
+  const navigate = useNavigate();
+  const [index, setIndex] = useState(0);
+  const [imageErrors, setImageErrors] = useState({});
 
-    useEffect(() => {
-        const el = scrollRef.current
-        if (!el) return
+  // auto slide
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
 
-        const interval = setInterval(() => {
-            indexRef.current = (indexRef.current + 1) % slides.length
+  const handleImageError = (id) => {
+    setImageErrors(prev => ({ ...prev, [id]: true }));
+  };
 
-            el.scrollTo({
-                left: el.clientWidth * indexRef.current,
-                behavior: "smooth"
-            })
-        }, 5000)
+  const goToPrev = () => {
+    setIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
-        return () => clearInterval(interval)
-    }, [])
+  const goToNext = () => {
+    setIndex((prev) => (prev + 1) % slides.length);
+  };
 
-    return (
-        <section className="overflow-hidden rounded">
+  return (
+    <section className="relative overflow-hidden rounded-2xl m-2 md:m-4">
+      {/* slides */}
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {slides.map((slide, i) => (
+          <div
+            key={slide.id}
+            className="min-w-full relative h-[200px] sm:h-[280px] md:h-[360px] lg:h-[420px]"
+          >
+            {imageErrors[slide.id] ? (
+              <div className="w-full h-full bg-gray-200 flex flex-col items-center justify-center">
+                <ImageOff size={48} className="text-gray-400" />
+                <span className="text-gray-500 mt-2 text-sm">{slide.title}</span>
+              </div>
+            ) : (
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={() => handleImageError(slide.id)}
+              />
+            )}
 
-            <div
-                ref={scrollRef}
-                className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar"
-            >
-                {slides.map((img, i) => (
-                    <div
-                        key={i}
-                        className="min-w-full aspect-[2/1] sm:aspect-[5/2] md:aspect-[3/1] lg:aspect-[4/1] snap-start relative shrink-0"
-                    >
-                        <img
-                            src={img}
-                            className="w-full h-full object-cover brightness-75"
-                            alt=""
-                            loading="lazy"
-                        />
+            {/* overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent flex flex-col justify-center px-6 sm:px-10 md:px-16">
+              <span className="bg-yellow-400 text-black text-xs sm:text-sm px-3 py-1 rounded-full w-fit mb-3 font-medium">
+                Exclusive
+              </span>
 
-                        {/* overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center p-4 md:p-6 lg:p-8 lg:pl-25">
+              <h1 className="text-white text-xl sm:text-2xl md:text-4xl font-bold max-w-lg leading-tight">
+                {slide.title}
+              </h1>
 
-                            <span className="text-text-dark text-xs md:text-sm px-2 py-1 rounded-lg w-max mb-2" style={{ background: "var(--color-secondary)" }}>
-                                Exclusive
-                            </span>
+              <p className="text-white/80 text-sm sm:text-base mt-2 max-w-md">
+                Curated for excellence. Shop the latest trends now.
+              </p>
 
-                            <h1 className="text-white text-lg md:text-2xl font-bold max-w-xs">
-                                The Summer Edit is Here
-                            </h1>
-
-                            <p className="text-white/80 text-xs md:text-sm">
-                                Curated for excellence
-                            </p>
-
-                            <button className="mt-3 text-white text-xs md:text-sm px-4 py-2 rounded-lg w-max" style={{ background: "var(--color-primary)" }}>
-                                Shop Now
-                            </button>
-                        </div>
-                    </div>
-                ))}
+              <button
+                onClick={() => navigate("/products")}
+                className="mt-4 sm:mt-6 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-medium w-fit hover:bg-gray-100 hover:scale-105 transition-all"
+              >
+                Shop Now
+              </button>
             </div>
+          </div>
+        ))}
+      </div>
 
-        </section>
-    )
+      {/* dots */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className={`h-2 rounded-full transition-all ${
+              i === index ? "bg-white w-5" : "bg-white/50 w-2 hover:bg-white/70"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* arrows */}
+      <button
+        onClick={goToPrev}
+        className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors hidden sm:flex items-center justify-center"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft size={24} />
+      </button>
+
+      <button
+        onClick={goToNext}
+        className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors hidden sm:flex items-center justify-center"
+        aria-label="Next slide"
+      >
+        <ChevronRight size={24} />
+      </button>
+    </section>
+  );
 }
-
-export default SlideBackground

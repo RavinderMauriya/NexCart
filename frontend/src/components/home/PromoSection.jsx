@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const PromoSection = () => {
+    const navigate = useNavigate()
     return (
         <div className="relative overflow-hidden md:m-4">
             <div className="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
@@ -84,6 +86,7 @@ const PromoSection = () => {
 
                             <a
                                 href="#"
+                                onClick={() => navigate("/products?category=69d3d85a2b68b4929dc94848")}
                                 className="inline-block rounded-md border-transparent px-8 py-3 text-center font-medium text-white"
                                 style={{ background: "var(--color-primary)", border: "none" }}
                             >

@@ -223,7 +223,7 @@ const FilterSidebar = ({ isMobileOpen, onMobileClose }) => {
           onClick={onMobileClose}
         />
         {/* Drawer */}
-        <div className="fixed left-0 top-0 h-full w-80 bg-bg-card p-4 z-50 overflow-y-auto md:hidden shadow-xl">
+        <div className="fixed left-0 top-0 h-full w-80 bg-bg-card p-4 z-50 overflow-y-auto md:hidden shadow-xl pb-20">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-lg">Filters</h2>
             <button onClick={onMobileClose} className="p-2 hover:bg-gray-100 rounded-lg">

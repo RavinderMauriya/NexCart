@@ -12,6 +12,19 @@ export const getBrands = asyncHandler(async (req, res) => {
     });
 });
 
+// Helper: Get all descendant category IDs recursively
+const getAllCategoryIds = async (parentId) => {
+    const ids = [parentId];
+    const children = await Category.find({ parent: parentId }).select("_id").lean();
+    
+    for (const child of children) {
+        const childIds = await getAllCategoryIds(child._id.toString());
+        ids.push(...childIds);
+    }
+    
+    return ids;
+};
+
 export const getProducts = asyncHandler(async (req, res) => {
     let {
         page = 1,
@@ -36,12 +49,10 @@ export const getProducts = asyncHandler(async (req, res) => {
     }
 
     // BASIC FILTERS
-    // CATEGORY FILTER - includes products from subcategories
+    // CATEGORY FILTER - includes products from all subcategories recursively
     if (category) {
-        // Get all child categories of the selected category
-        const childCategories = await Category.find({ parent: category }).select("_id").lean();
-        const categoryIds = [category, ...childCategories.map(c => c._id.toString())];
-        query.category = { $in: categoryIds };
+        const allCategoryIds = await getAllCategoryIds(category);
+        query.category = { $in: allCategoryIds };
     }
     if (brand) query.brand = brand;
 
