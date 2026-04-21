@@ -1,7 +1,5 @@
 import { useEffect, useState, useContext } from "react";
 import ProfileSidebar from "../components/profile/ProfileSidebar";
-import ProfileInfo from "../components/profile/ProfileInfo";
-import ProfileOrders from "../components/profile/ProfileOrders";
 import { apiRequest } from "../services/api";
 import { AuthContext } from "../context/authContext";
 import { Outlet } from "react-router-dom";

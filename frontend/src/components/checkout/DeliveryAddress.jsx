@@ -28,9 +28,7 @@ const DeliveryAddress = ({ addresses, selectedAddressId, onSelect }) => {
               <label
                 key={addr._id}
                 className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition ${
-                  selectedAddressId === addr._id
-                    ? "border-primary bg-primary/5"
-                    : "border-gray-200 hover:border-gray-300"
+                  selectedAddressId === addr._id ? "border-primary bg-primary/5" : "border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <input
@@ -44,13 +42,9 @@ const DeliveryAddress = ({ addresses, selectedAddressId, onSelect }) => {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold">{addr.fullName}</span>
-                    {addr.isDefault && (
-                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">Default</span>
-                    )}
+                    {addr.isDefault && <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">Default</span>}
                   </div>
-                  <p className="text-sm text-text-light">
-                    {addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}
-                  </p>
+                  <p className="text-sm text-text-light">{addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}</p>
                   <p className="text-sm text-text-light">Phone: {addr.phone}</p>
                 </div>
               </label>
