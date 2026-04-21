@@ -24,19 +24,7 @@ Body:
 Response:
 {
 "success": true,
-"message": "OTP sent"
-}
-
----
-
-## Verify OTP
-
-POST /auth/otp-verify
-
-Body:
-{
-"email": "[test@mail.com](mailto:test@mail.com)",
-"otp": "123456"
+"message": "user register successfully"
 }
 
 ---
@@ -53,8 +41,9 @@ Body:
 
 Response:
 {
-"token": "JWT_TOKEN",
-"refreshToken": "REFRESH_TOKEN"
+"success": true,
+"message": "Login successful",
+"accessToken": "JWT_TOKEN"
 }
 
 ---
@@ -62,6 +51,12 @@ Response:
 ## Refresh Token
 
 POST /auth/refresh
+
+---
+
+## Logout
+
+GET /auth/logout
 
 ---
 
@@ -83,6 +78,12 @@ Query Params:
 
 ---
 
+## Get Brands
+
+GET /products/brands
+
+---
+
 ## Get Single Product
 
 GET /products/:id
@@ -98,6 +99,18 @@ POST /products
 ## Update Product (Admin)
 
 PUT /products/:id
+
+---
+
+## Get Product Variant
+
+GET /products/:productId/:variantId
+
+---
+
+## Upload Variant Images (Admin)
+
+POST /products/upload
 
 ---
 
@@ -136,7 +149,7 @@ PUT /cart/update
 
 ## Remove Item
 
-DELETE /cart/remove
+DELETE /cart/
 
 ---
 
@@ -149,7 +162,8 @@ POST /orders
 Body:
 {
 "addressId": "id",
-"paymentMethod": "COD"
+"paymentMethod": "COD",
+"items": []
 }
 
 ---
@@ -177,6 +191,12 @@ Body:
 
 ---
 
+## Verify Payment
+
+POST /orders/verify
+
+---
+
 ## Cancel Order
 
 POST /orders/cancel
@@ -189,22 +209,35 @@ POST /orders/return
 
 ---
 
-# 5. COUPON APIs
+# 5. CATEGORY APIs
 
-## Apply Coupon
+## Get Categories
 
-POST /coupon/apply
-
-Body:
-{
-"code": "FLAT100"
-}
+GET /category
 
 ---
 
-## Create Coupon (Admin)
+## Get Root Categories
 
-POST /coupon
+GET /category/root
+
+---
+
+## Create Category (Admin)
+
+POST /category
+
+---
+
+## Update Category (Admin)
+
+PUT /category
+
+---
+
+## Delete Category (Admin)
+
+DELETE /category/:id
 
 ---
 
@@ -229,23 +262,65 @@ GET /reviews/:productId
 
 ---
 
+## Delete Review
+
+DELETE /reviews/:reviewId
+
+---
+
 # 7. USER APIs
 
 ## Get Profile
 
-GET /user/profile
+GET /user/profile/me
 
 ---
 
 ## Update Profile
 
-PUT /user/profile
+PUT /user/profile/update
+
+---
+
+## Get All Users (Admin)
+
+GET /user/profile/all
+
+---
+
+## Upload Avatar
+
+POST /user/profile/upload-avatar
+
+---
+
+## Get Addresses
+
+GET /user/profile/address
+
+---
+
+## Add Address
+
+POST /user/profile/address
+
+---
+
+## Update Address
+
+PUT /user/profile/address/:addressId
+
+---
+
+## Delete Address
+
+DELETE /user/profile/address/:addressId
 
 ---
 
 ## Block User (Admin)
 
-PUT /user/block/:id
+PUT /user/profile/block/:id
 
 ---
 

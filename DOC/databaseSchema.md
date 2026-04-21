@@ -4,12 +4,12 @@
 
 ```js
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true , index: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ["user","admin"], default: "user" },
+  name: { type: String, required: true, minlength: 2 },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
+  password: { type: String, required: true, minlength: 6 },
+  role: { type: String, enum: ["user","admin"], default: "user", required: true },
   isBlocked: { type: Boolean, default: false },
-  addresses: [
+  address: [
     {
       fullName: String,
       phone: String,
@@ -17,9 +17,14 @@ const userSchema = new mongoose.Schema({
       city: String,
       state: String,
       addressLine: String,
-      isDefault: Boolean
+      isDefault: { type: Boolean, default: false }
     }
-  ]
+  ],
+  profileImage: {
+    fileName: String,
+    url: String,
+    fileId: String
+  }
 }, { timestamps: true });
 ```
 
@@ -45,9 +50,9 @@ const categorySchema = new mongoose.Schema({
 
 ```js
 const productSchema = new mongoose.Schema({
-  title: { type: String, required: true, index: "text" },
-  description: String,
-  brand: { type: String, index: true },
+  title: { type: String, required: true, index: true },
+  description: { type: String, required: true },
+  brand: { type: String, lowercase: true, index: true },
 
   category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -128,7 +133,7 @@ const orderSchema = new mongoose.Schema({
 
   paymentMethod: {
     type: String,
-    enum: ["COD","UPI"]
+    enum: ["COD","ONLINE","UPI"]
   },
 
   paymentStatus: {
@@ -144,7 +149,10 @@ const orderSchema = new mongoose.Schema({
   },
 
   address: Object,
-  coupon: String
+  coupon: String,
+  razorpayOrderId: String,
+  razorpayPaymentId: String,
+  returnReason: String
 
 }, { timestamps: true });
 ```
@@ -166,22 +174,7 @@ const reviewSchema = new mongoose.Schema({
 
 ---
 
-## 7. Coupon Schema
-
-```js
-const couponSchema = new mongoose.Schema({
-  code: { type: String, unique: true, index: true },
-  discountType: { type: String, enum: ["flat","percent"] },
-  value: Number,
-  minOrder: Number,
-  expiry: Date,
-  isActive: Boolean
-});
-```
-
----
-
-## 8. Index Summary
+## 7. Index Summary
 
 ```js
 productSchema.index({ title: "text" });
@@ -196,7 +189,7 @@ reviewSchema.index({ product: 1 });
 
 ---
 
-## 9. Notes
+## 8. Notes
 
 * Variants embedded for fast reads
 * Order stores snapshot to avoid inconsistency

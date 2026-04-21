@@ -223,7 +223,7 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 
 //GET ALL ORDERS admin
 export const getAllOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find().populate("user", "name email");
+    const orders = await Order.find().sort({ createdAt: -1 }).populate("user", "name email");
 
     res.status(200).json({
         success: true,

@@ -19,7 +19,6 @@
 * carts
 * orders
 * reviews
-* coupons
 
 ---
 
@@ -52,7 +51,7 @@
 ### Embedded
 
 * product.variants (performance critical)
-* user.addresses
+* user.address
 * order.items (snapshot)
 
 ### Referenced

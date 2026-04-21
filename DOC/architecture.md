@@ -30,7 +30,7 @@ Client (React) ↔ API Layer (Express) ↔ Database (MongoDB)
   /pages
   /context
   /services
-  /utils
+  /adminPages
 ```
 
 ---
@@ -53,14 +53,13 @@ Responsibilities:
   /middleware
   /models
   /utils
-  /config
 ```
 
 ---
 
 ### 2.3 Database Layer (MongoDB)
 
-* Collections: users, products, categories, carts, orders, reviews, coupons
+* Collections: users, products, categories, carts, orders, reviews
 * Mongoose ODM
 * Indexed queries
 
@@ -85,9 +84,8 @@ Responsibilities:
 
 1. User enters email/password
 2. Server validates credentials
-3. OTP sent via Resend
-4. OTP verified
-5. JWT + refresh token issued
+3. JWT access token + refresh token issued
+4. Refresh token stored in httpOnly cookie
 
 ### Protected Route
 
@@ -116,11 +114,11 @@ Responsibilities:
 
 ## 6. Order Flow
 
-1. Fetch cart
+1. Fetch cart (or use buy-now items)
 2. Validate stock
-3. Apply coupon
-4. Calculate total
-5. Create order (snapshot)
+3. Calculate total
+4. Create order (snapshot)
+5. Razorpay integration for online payments
 6. Update stock
 7. Clear cart
 

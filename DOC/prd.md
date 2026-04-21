@@ -26,7 +26,6 @@ A Flipkart-style single-vendor eCommerce platform built using MERN stack.
 * Browse products
 * Add to cart
 * Place orders
-* Apply coupons
 * Write reviews
 
 ### Admin
@@ -34,7 +33,6 @@ A Flipkart-style single-vendor eCommerce platform built using MERN stack.
 * Manage products
 * Manage orders
 * Manage users
-* Manage coupons
 
 ---
 
@@ -43,9 +41,8 @@ A Flipkart-style single-vendor eCommerce platform built using MERN stack.
 ### 3.1 Authentication
 
 * Email + password login
-* OTP verification (Resend)
 * JWT authentication
-* Refresh token
+* Refresh token (httpOnly cookie)
 
 ---
 
@@ -122,22 +119,13 @@ pending → confirmed → shipped → delivered → cancelled → returned
 
 #### Features
 
-* COD and UPI
+* COD, UPI and Razorpay (ONLINE)
 * Payment status tracking
 * Address snapshot
 
 ---
 
-### 3.7 Coupon System
-
-* Apply coupon
-* Flat or percentage discount
-* Minimum order value
-* Expiry validation
-
----
-
-### 3.8 Review System
+### 3.7 Review System
 
 * Rating (1–5)
 * Comment
@@ -146,19 +134,18 @@ pending → confirmed → shipped → delivered → cancelled → returned
 
 ---
 
-### 3.9 Address System
+### 3.8 Address System
 
 * Multiple addresses
 * Default address selection
 
 ---
 
-### 3.10 Admin Panel
+### 3.9 Admin Panel
 
 * Product CRUD
 * Order management
 * User block/unblock
-* Coupon management
 
 ---
 
