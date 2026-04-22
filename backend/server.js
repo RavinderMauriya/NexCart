@@ -8,6 +8,7 @@ import cartRoute from './routes/cartRoute.js'
 import orderRoute from './routes/orderRoute.js'
 import reviewRoute from './routes/reviewRoute.js'
 import userRoute from './routes/userRoute.js'
+import adminStatusRoute from './routes/adminStatusRoute.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
@@ -23,12 +24,12 @@ app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5000',
     credentials: true
 }));
-// console log mdw
-app.use((req, res, next) => {
-    console.log(req.method, req.url);
-    next();
-})
 
+// console log mdw
+// app.use((req, res, next) => {
+//     console.log(req.method, req.url);
+//     next();
+// })
 
 //routes start
 app.get("/", (req, res) => {
@@ -41,6 +42,7 @@ app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/user/profile", userRoute);
+app.use("/api/admin/status", adminStatusRoute);
 
 
 //catch err
