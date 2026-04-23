@@ -82,6 +82,7 @@ export default function ProductImages() {
                 <img
                   key={i}
                   src={img}
+                  loading="lazy"
                   className="w-16 h-16 object-cover rounded"
                 />
               ))}

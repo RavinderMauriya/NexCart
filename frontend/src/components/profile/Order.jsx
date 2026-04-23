@@ -71,6 +71,7 @@ const Order = () => {
                 <img
                   src={item.variant?.images?.[0]}
                   className="w-16 h-16 object-cover rounded"
+                  loading="lazy"
                 />
 
                 <div className="flex-1">

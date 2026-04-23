@@ -114,6 +114,7 @@ export default function Orders() {
                         <img
                           src={item.variant?.images?.[0]}
                           alt={item.title}
+                          loading="lazy"
                           className="w-full h-full object-cover rounded-lg border"
                         />
                       </div>

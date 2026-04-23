@@ -11,31 +11,30 @@ import userRoute from './routes/userRoute.js'
 import adminStatusRoute from './routes/adminStatusRoute.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { limiter, authLimiter } from './middleware/rateLimit.js';
+
 dotenv.config();
 
 //start app
 const app = express();
+
+app.set("trust proxy", 1); // for proxy + rateLimit
 
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5000',
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true
 }));
-
-// console log mdw
-// app.use((req, res, next) => {
-//     console.log(req.method, req.url);
-//     next();
-// })
+app.use("/api", limiter);
 
 //routes start
 app.get("/", (req, res) => {
     res.json({ success: true, message: "API running" })
 })
-app.use("/api/auth", authRoute);
+app.use("/api/auth", authLimiter, authRoute);
 app.use("/api/products", productRouter);
 app.use("/api/category", productCategory);
 app.use("/api/cart", cartRoute);

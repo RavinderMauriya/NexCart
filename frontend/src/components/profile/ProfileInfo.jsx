@@ -70,6 +70,7 @@ const ProfileInfo = () => {
                 src={user.profileImage.url}
                 alt="avatar"
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             ) : (
               user?.name?.charAt(0)?.toUpperCase()

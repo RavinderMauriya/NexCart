@@ -57,7 +57,7 @@ export default function SlideBackground() {
                 src={slide.image}
                 alt={slide.title}
                 className="w-full h-full object-cover"
-                loading="lazy"
+                loading={i === index ? "eager" : "lazy"}
                 onError={() => handleImageError(slide.id)}
               />
             )}

@@ -43,6 +43,7 @@ const ClothingSection = () => {
                 src={item.image}
                 alt={item.name}
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                loading="lazy"
               />
             </div>
 

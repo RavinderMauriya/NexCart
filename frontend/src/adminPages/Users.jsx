@@ -45,6 +45,7 @@ export default function Users() {
                 src={u.profileImage.url}
                 className="w-12 h-12 rounded-full object-cover shrink-0"
                 alt=""
+                loading="lazy"
               />
             ) : (
               <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0" />
@@ -93,6 +94,7 @@ export default function Users() {
                       src={u.profileImage.url}
                       className="w-10 h-10 rounded-full object-cover"
                       alt=""
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-10 h-10 bg-gray-200 rounded-full" />

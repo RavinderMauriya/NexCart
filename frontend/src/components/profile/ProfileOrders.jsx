@@ -24,6 +24,7 @@ const ProfileOrders = () => {
                   src={order.items[0].variant.images[0]}
                   alt={order.items[0].title}
                   className="w-16 h-16 object-cover rounded-lg"
+                  loading="lazy"
                 />
               )}
               <div>

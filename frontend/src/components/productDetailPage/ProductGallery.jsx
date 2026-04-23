@@ -27,6 +27,7 @@ const ProductGallery = ({ images }) => {
               src={img}
               alt={`View ${i + 1}`}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
         ))}

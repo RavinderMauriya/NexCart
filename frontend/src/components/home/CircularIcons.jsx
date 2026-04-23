@@ -59,7 +59,7 @@ const CircularIcons = () => {
             key={i}
             className="flex flex-col items-center group cursor-pointer min-w-[100px] md:min-w-[140px] snap-start"
           >
-            {/* icon - aspect-square prevents CLS */}
+
             <div className="w-14 sm:w-16 md:w-28 aspect-square rounded-full md:rounded-xl overflow-hidden shadow-sm group-hover:shadow-md group-hover:scale-105 transition bg-bg-card border-border">
               <img
                 src={item.img}
@@ -71,12 +71,7 @@ const CircularIcons = () => {
 
             {/* label */}
             <span
-              className="
-                            text-xs sm:text-sm
-                            font-medium text-center mt-2
-                            transition text-text-dark
-                        "
-            >
+              className="text-xs sm:text-sm font-medium text-center mt-2 transition text-text-dark">
               {item.name}
             </span>
           </div>

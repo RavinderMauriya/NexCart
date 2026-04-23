@@ -107,6 +107,7 @@ export default function Products() {
                     {v.images?.[0] ? (
                       <img
                         src={v.images[0]}
+                        loading="lazy"
                         className="w-full h-32 object-cover rounded mb-2"
                       />
                     ) : (
