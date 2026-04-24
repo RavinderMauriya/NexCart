@@ -1,11 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import { apiRequest } from "../../services/api";
 
 const Address = () => {
-  const { token } = useContext(AuthContext);
+  const { token, user, refreshUser } = useContext(AuthContext);
 
-  const [addresses, setAddresses] = useState([]);
+  const addresses = user?.address || [];
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -14,18 +14,6 @@ const Address = () => {
     state: "",
     pincode: "",
   });
-
-  //  FETCH 
-  const fetchAddress = async () => {
-    const res = await apiRequest("/user/profile/address", "GET", null, token);
-    if (res.success) {
-      setAddresses(res.data || []);
-    }
-  };
-
-  useEffect(() => {
-    fetchAddress();
-  }, []);
 
   //  HANDLE CHANGE 
   const handleChange = (e) => {
@@ -42,7 +30,7 @@ const Address = () => {
     );
 
     if (res.success) {
-      fetchAddress();
+      await refreshUser();
       setForm({
         fullName: "",
         phone: "",
@@ -63,7 +51,7 @@ const Address = () => {
       token
     );
 
-    if (res.success) fetchAddress();
+    if (res.success) await refreshUser();
   };
 
   //  SET DEFAULT 
@@ -75,7 +63,7 @@ const Address = () => {
       token
     );
 
-    if (res.success) fetchAddress();
+    if (res.success) await refreshUser();
   };
 
   return (

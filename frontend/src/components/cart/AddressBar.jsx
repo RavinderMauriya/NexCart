@@ -1,29 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import { apiRequest } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 const AddressBar = () => {
-  const { token } = useContext(AuthContext);
-  const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useContext(AuthContext);
+  const addresses = user?.address || [];
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      if (!token) return;
-      const res = await apiRequest("/user/profile/address", "GET", null, token);
-      if (res.success) {
-        setAddresses(res.data || []);
-      }
-      setLoading(false);
-    };
-    fetchAddresses();
-  }, [token]);
 
   const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0];
 
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="bg-bg-card rounded-lg p-4 flex justify-between items-center shadow-sm border">
         <p className="text-sm text-text-light">Loading address...</p>

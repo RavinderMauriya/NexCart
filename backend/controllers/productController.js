@@ -12,7 +12,7 @@ export const getBrands = asyncHandler(async (req, res) => {
     });
 });
 
-// Helper: Get all descendant category IDs recursively
+//Get all descendant category IDs recursively
 const getAllCategoryIds = async (parentId) => {
     const ids = [parentId];
     const children = await Category.find({ parent: parentId }).select("_id").lean();

@@ -48,6 +48,11 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
 
+  const refreshUser = async () => {
+    if (!token) return;
+    await fetchProfile(token);
+  };
+
   const refreshToken = async () => {
     const res = await apiRequest("/auth/refresh", "POST");
     const receivedToken = res.token || res.accessToken;
@@ -124,6 +129,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         setUser,
+        refreshUser,
         
         //ui model state
         isOpen,

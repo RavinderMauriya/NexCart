@@ -13,13 +13,13 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, loading: cartLoading } = useContext(CartContext);
-  const { token, user } = useContext(AuthContext);
+  const { token, user, loading: authLoading } = useContext(AuthContext);
 
   const buyNowItem = location.state?.buyNowItem;
   const checkoutItems = buyNowItem ? [buyNowItem] : cart;
   const isBuyNow = !!buyNowItem;
 
-  const [addresses, setAddresses] = useState([]);
+  const addresses = user?.address || [];
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const [loading, setLoading] = useState(false);
@@ -29,17 +29,14 @@ const CheckoutPage = () => {
   const totalPrice = checkoutItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discount = totalMRP - totalPrice;
 
+  // set default address AFTER auth loads
   useEffect(() => {
-    const loadAddresses = async () => {
-      const res = await apiRequest("/user/profile/address", "GET", null, token);
-      if (res.success && res.data) {
-        setAddresses(res.data);
-        const defaultAddr = res.data.find(a => a.isDefault) || res.data[0];
-        if (defaultAddr) setSelectedAddressId(defaultAddr._id);
-      }
-    };
-    loadAddresses();
-  }, [token]);
+    if (authLoading) return;
+    if (addresses.length > 0 && !selectedAddressId) {
+      const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+      if (defaultAddr) setSelectedAddressId(defaultAddr._id);
+    }
+  }, [addresses, authLoading, selectedAddressId]);
 
   useEffect(() => {
     if (!isBuyNow && !cartLoading && cart.length === 0) navigate("/cart");
@@ -134,7 +131,7 @@ const CheckoutPage = () => {
 
   const selectedAddress = addresses.find(a => a._id === selectedAddressId);
 
-  if (cartLoading) return (
+  if (cartLoading || authLoading) return (
     <div className="min-h-screen bg-bg-main flex items-center justify-center">
       <Loader2 className="animate-spin text-primary" size={32} />
     </div>
