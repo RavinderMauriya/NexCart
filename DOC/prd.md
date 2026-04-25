@@ -2,11 +2,11 @@
 
 ## 1. Product Overview
 
-A Flipkart-style single-vendor eCommerce platform built using MERN stack.
+A single-vendor eCommerce platform built using MERN stack.
 
 ### Goals
 
-* Sell products across 4 categories
+* Sell products across multiple categories
 * Provide smooth shopping experience
 * Scalable backend design
 
@@ -15,7 +15,8 @@ A Flipkart-style single-vendor eCommerce platform built using MERN stack.
 * Electronics
 * Mobiles
 * Fashion
-* Furniture
+* Home & Kitchen
+* Beauty & Health
 
 ---
 
@@ -170,13 +171,14 @@ pending → confirmed → shipped → delivered → cancelled → returned
 
 * Fast API response (<300ms avg)
 * High product query performance
-* Low cart abandonment (logic ready)
-
+* High user engagement with simple UI (mobile-friendly)
 ---
 
 ## 7. Future Scope
 
 * Multi-vendor system
-* Recommendation engine
 * Redis caching
 * ElasticSearch integration
+* Real-time notifications
+* Analytics dashboard
+* Progressive Web App (PWA) support
