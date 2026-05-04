@@ -14,7 +14,7 @@ export const limiter = rateLimit({
 });
 
 
-// Stricter limiter for auth routes (prevent brute-force)
+//limiter for auth routes
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 min
     max: 5,                    // 5 attempts per IP

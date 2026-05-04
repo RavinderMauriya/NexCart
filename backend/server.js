@@ -19,19 +19,28 @@ dotenv.config();
 const app = express();
 
 app.set("trust proxy", 1); // for proxy + rateLimit
-
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map(url => url.trim());
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use("/api", limiter);
 
 //routes start
-app.get("/", (req, res) => {
+app.get("/", limiter, (req, res) => {
     res.json({ success: true, message: "API running" })
 })
 app.use("/api/auth", authLimiter, authRoute);
